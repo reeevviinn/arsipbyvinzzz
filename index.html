@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARSIP PINJAMAN • Professional Edition</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+<style>
+:root{
+  --navy:#10243e;--navy2:#173c67;--blue:#2f6ea5;--blue2:#4f8fca;
+  --bg:#f4f7fb;--card:#fff;--text:#182334;--muted:#738096;
+  --line:#e2e8f0;--soft:#f8fafc;--success:#17805e;--danger:#c62828;
+  --warning:#b86a00;--shadow:0 14px 40px rgba(16,36,62,.09)
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg)}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* LOGIN */
+.login-page{min-height:100vh;display:grid;place-items:center;padding:24px;background:
+ radial-gradient(circle at 15% 20%,rgba(79,143,202,.22),transparent 30%),
+ linear-gradient(135deg,#0d213a 0%,#173b65 52%,#245b8f 100%);position:relative;overflow:hidden}
+.login-page:before,.login-page:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
+.login-page:before{width:500px;height:500px;right:-160px;top:-180px}.login-page:after{width:380px;height:380px;left:-160px;bottom:-130px}
+.login-card{width:min(980px,100%);min-height:570px;background:rgba(255,255,255,.98);border-radius:28px;overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr;box-shadow:0 35px 90px rgba(0,0,0,.25);position:relative;z-index:1}
+.login-hero{padding:54px;background:linear-gradient(160deg,#10243e,#1a456f);color:#fff;display:flex;flex-direction:column;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-weight:900}
+.logo-title{font-size:20px;font-weight:900;letter-spacing:.3px}.logo-sub{font-size:11px;color:#bcd0e3;margin-top:3px}
+.hero-copy{max-width:460px}.hero-copy h1{font-size:37px;line-height:1.08;margin:0 0 16px}.hero-copy p{color:#c8d7e8;line-height:1.7;font-size:14px}
+.hero-pills{display:flex;gap:8px;flex-wrap:wrap}.hero-pill{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);padding:8px 10px;border-radius:999px;font-size:11px}
+.login-form{padding:54px;display:flex;flex-direction:column;justify-content:center}
+.eyebrow{font-size:11px;font-weight:900;color:var(--blue);letter-spacing:.12em;text-transform:uppercase}
+.login-form h2{font-size:28px;margin:9px 0 7px}.login-form p{color:var(--muted);font-size:13px;margin:0 0 28px}
+.field{margin-bottom:15px}.field label{font-size:12px;font-weight:800;display:block;margin-bottom:7px}.input-wrap{position:relative}.input-wrap input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:11px;outline:none;background:#fff;transition:.18s}.input-wrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,110,165,.1)}
+.password-toggle{position:absolute;right:9px;top:7px;border:0;background:transparent;color:var(--muted);padding:8px}
+.login-btn{width:100%;border:0;background:linear-gradient(135deg,var(--navy2),var(--blue));color:#fff;border-radius:11px;padding:14px;font-weight:900;margin-top:6px;box-shadow:0 9px 22px rgba(23,60,103,.22)}
+.login-note{margin-top:16px;background:#f8fafc;border:1px dashed #ced8e4;border-radius:10px;padding:10px 12px;font-size:10.5px;color:#65748a;line-height:1.45}
+.login-error{min-height:19px;color:var(--danger);font-size:12px;font-weight:700;margin:8px 0 0}
+
+/* APP */
+.app-shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:var(--navy);color:#fff;padding:22px 15px;display:flex;flex-direction:column;z-index:50}
+.side-brand{padding:9px 11px 22px;border-bottom:1px solid rgba(255,255,255,.11);margin-bottom:18px}.side-brand .title{font-size:19px;font-weight:900}.side-brand .sub{font-size:11px;color:#a9bad0;margin-top:5px}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#dbe6f0;padding:12px 13px;text-align:left;border-radius:10px;font-size:13px;font-weight:700}.nav button:hover,.nav button.active{background:rgba(255,255,255,.095);color:#fff}
+.side-bottom{margin-top:auto;border-top:1px solid rgba(255,255,255,.11);padding-top:14px}.user-chip{font-size:12px;font-weight:800}.user-chip small{display:block;color:#9fb0c4;font-weight:500;margin-top:3px}.logout{margin-top:11px;width:100%;border:1px solid rgba(255,255,255,.18);background:transparent;color:#f0c9c5;padding:9px 10px;border-radius:9px;font-size:11px;font-weight:800}
+.main{grid-column:2;padding:0;min-width:0}.topbar{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:40}.page-title{font-size:20px;font-weight:900}.top-actions{display:flex;align-items:center;gap:10px}.date-chip{font-size:11px;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:8px 10px}
+.content{padding:28px;max-width:1600px;margin:auto}.page{display:none;animation:fade .2s ease}.page.active{display:block}@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.page-intro{margin-bottom:22px}.page-intro h2{margin:0;font-size:23px}.page-intro p{margin:6px 0 0;color:var(--muted);font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:19px;box-shadow:var(--shadow);position:relative;overflow:hidden}.stat:after{content:"";position:absolute;right:-24px;top:-24px;width:85px;height:85px;border-radius:50%;background:#edf4fb}.stat-label{font-size:11px;color:var(--muted);font-weight:800}.stat-value{font-size:27px;font-weight:900;margin-top:7px}.stat-hint{font-size:10px;color:#8a97aa;margin-top:4px}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:16px}.card-title{font-size:15px;font-weight:900}.card-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.quick button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:15px;text-align:left;transition:.18s}.quick button:hover{border-color:#b9cbe0;transform:translateY(-1px);box-shadow:0 8px 20px rgba(16,36,62,.06)}.quick strong{font-size:12px;display:block}.quick span{font-size:10px;color:var(--muted)}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid #edf1f5;font-size:11px;white-space:nowrap}th{font-size:10px;color:#637186;text-transform:uppercase;letter-spacing:.04em;background:#fafbfd}td small{color:var(--muted)}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:900;background:#eaf7f1;color:var(--success)}
+.badge.warn{background:#fff4e6;color:var(--warning)}
+.badge.err{background:#fdeeee;color:var(--danger)}
+
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.req{color:var(--danger)}.full{grid-column:1/-1}.field2 label{font-size:12px;font-weight:800;display:block;margin-bottom:7px}.field2 input,.field2 textarea,.field2 select{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 13px;outline:none;background:#fff}.field2 textarea{min-height:110px;resize:vertical}.field2 input:focus,.field2 textarea:focus,.field2 select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,110,165,.08)}
+.upload-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.upload{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fbfcfe}.upload-title{font-size:12px;font-weight:900;margin-bottom:9px}.upload-title em{font-style:normal;color:var(--danger)}.preview{height:165px;border-radius:10px;background:#eef2f7;display:grid;place-items:center;overflow:hidden;color:#8b97a8;font-size:11px;text-align:center;padding:8px}.preview img{max-width:100%;max-height:100%;display:block;object-fit:contain}.upload input[type=file]{width:100%;font-size:10px;margin-top:9px}
+.actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.btn{border:0;border-radius:10px;padding:11px 15px;font-size:12px;font-weight:900}.btn.primary{background:var(--navy2);color:#fff}.btn.primary:hover{filter:brightness(1.06)}.btn.ghost{background:#edf2f7;color:#304156}.btn.success{background:var(--success);color:#fff}
+.info{font-size:11px;line-height:1.55;color:#627086;background:#f8fafc;border:1px dashed #ced8e4;padding:11px 12px;border-radius:11px}
+.searchbar{display:flex;gap:9px;margin-bottom:16px}.searchbar input{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none}.searchbar select{width:180px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:#fff}
+.history-empty{text-align:center;padding:40px;color:#8794a7;font-size:12px}
+
+/* LOADER */
+.overlay{position:fixed;inset:0;background:rgba(10,20,32,.64);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:9999}.overlay.show{display:flex}.loader{width:min(460px,100%);background:#fff;border-radius:20px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.28)}.loader-row{display:flex;gap:13px;align-items:center}.spinner{width:44px;height:44px;border-radius:50%;border:4px solid #e9eef4;border-top-color:var(--blue);animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.loader-title{font-size:16px;font-weight:900}.loader-desc{font-size:11px;color:var(--muted);margin-top:3px}.bar{height:8px;background:#edf1f5;border-radius:999px;overflow:hidden;margin-top:18px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy2),var(--blue2));transition:width .25s}.steps{margin-top:17px;display:grid;gap:8px}.step{font-size:11px;color:#8b97a8;display:flex;gap:8px;align-items:center}.step .dot{width:8px;height:8px;border-radius:50%;background:#d7dee7}.step.done{color:var(--success);font-weight:700}.step.done .dot{background:var(--success)}.step.active{color:var(--navy2);font-weight:900}.step.active .dot{background:var(--navy2)}
+
+.toast{position:fixed;right:22px;bottom:22px;min-width:280px;max-width:430px;display:none;z-index:10000;padding:13px 15px;border-radius:11px;background:#172033;color:#fff;font-size:12px;box-shadow:0 12px 30px rgba(0,0,0,.2)}.toast.show{display:block}.toast.success{background:var(--success)}.toast.error{background:var(--danger)}
+
+@media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.upload-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:800px){.app-shell{display:block}.sidebar{position:static;width:100%;height:auto;padding:12px;display:block}.side-brand{padding:8px 10px 12px;margin-bottom:8px}.nav{display:grid;grid-template-columns:repeat(4,1fr)}.nav button{text-align:center;font-size:10px;padding:9px 6px}.side-bottom{display:none}.topbar{position:static;padding:0 16px}.content{padding:17px}.login-card{grid-template-columns:1fr}.login-hero{display:none}}
+@media(max-width:600px){.cards{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.upload-grid{grid-template-columns:1fr}.searchbar{flex-direction:column}.searchbar select{width:100%}.cards .stat-value{font-size:22px}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <section class="login-hero">
+      <div class="logo">
+        <div class="logo-mark">AP</div>
+        <div><div class="logo-title">ARSIP PINJAMAN</div><div class="logo-sub">Professional Edition</div></div>
+      </div>
+      <div class="hero-copy">
+        <h1>Kelola arsip peminjam dengan rapi.</h1>
+        <p>Form biodata, dokumentasi, preview foto, riwayat lokal, dan pembuatan PDF lengkap dalam satu aplikasi.</p>
+        <div class="hero-pills">
+          <span class="hero-pill">PDF A4</span><span class="hero-pill">6 Dokumentasi</span><span class="hero-pill">Local Processing</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#9fb4cb">Semua foto diproses di perangkat ini dan tidak diupload ke server aplikasi.</div>
+    </section>
+
+    <section class="login-form">
+      <div class="eyebrow">Secure Access</div>
+      <h2>Selamat datang</h2>
+      <p>Masuk untuk membuka dashboard arsip pinjaman.</p>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <div class="input-wrap"><input id="username" autocomplete="username" placeholder="Masukkan username"></div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <input id="password" type="password" autocomplete="current-password" placeholder="Masukkan password">
+          <button class="password-toggle" type="button" id="togglePassword">Lihat</button>
+        </div>
+      </div>
+
+      <button class="login-btn" id="loginBtn">MASUK KE APLIKASI</button>
+      <div class="login-error" id="loginError"></div>
+      <div class="login-note">
+        Login ini adalah <b>gerbang tampilan lokal</b>. Karena aplikasi 100% GitHub tanpa backend, kredensial yang ditulis di JavaScript dapat dilihat oleh orang yang membuka source code. Jangan gunakan password yang sama dengan akun Google/email.
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="app-shell hidden">
+  <aside class="sidebar">
+    <div class="side-brand">
+      <div class="title">ARSIP PINJAMAN</div>
+      <div class="sub">Sistem Dokumentasi Peminjam</div>
+    </div>
+
+    <nav class="nav">
+      <button class="active" data-page="dashboard">Dashboard</button>
+      <button data-page="input">Input Peminjam</button>
+      <button data-page="history">Riwayat PDF</button>
+      <button data-page="guide">Panduan</button>
+    </nav>
+
+    <div class="side-bottom">
+      <div class="user-chip">Pemilik Aplikasi<small id="sidebarDate"></small></div>
+      <button class="logout" id="logoutBtn">Keluar</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div class="top-actions"><div class="date-chip" id="topDate"></div></div>
+    </header>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section id="page-dashboard" class="page active">
+        <div class="page-intro">
+          <h2>Dashboard</h2>
+          <p>Ringkasan aktivitas pembuatan arsip pada perangkat ini.</p>
+        </div>
+
+        <div class="cards">
+          <div class="stat"><div class="stat-label">PDF DIBUAT</div><div class="stat-value" id="statPdf">0</div><div class="stat-hint">Riwayat lokal</div></div>
+          <div class="stat"><div class="stat-label">PEMINJAM</div><div class="stat-value" id="statBorrower">0</div><div class="stat-hint">Arsip unik di perangkat</div></div>
+          <div class="stat"><div class="stat-label">FOTO DIPROSES</div><div class="stat-value" id="statPhotos">0</div><div class="stat-hint">Total dokumentasi</div></div>
+          <div class="stat"><div class="stat-label">HARI INI</div><div class="stat-value" id="statToday">0</div><div class="stat-hint">PDF dibuat hari ini</div></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Aktivitas Terbaru</div><div class="card-sub">Riwayat PDF yang dibuat dari perangkat ini.</div></div><button class="btn ghost" data-page-jump="history">Lihat semua</button></div>
+            <div id="dashboardHistory"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Akses Cepat</div><div class="card-sub">Mulai pekerjaan yang paling sering digunakan.</div></div></div>
+            <div class="quick">
+              <button data-page-jump="input"><strong>+ Input Peminjam</strong><span>Isi biodata & dokumentasi</span></button>
+              <button data-page-jump="history"><strong>Riwayat PDF</strong><span>Lihat file yang pernah dibuat</span></button>
+              <button id="quickReset"><strong>Reset Form</strong><span>Bersihkan data sementara</span></button>
+              <button data-page-jump="guide"><strong>Panduan</strong><span>Cara kerja aplikasi</span></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INPUT -->
+      <section id="page-input" class="page">
+        <div class="page-intro">
+          <h2>Input Data Peminjam</h2>
+          <p>Lengkapi data lalu buat satu PDF lengkap beserta seluruh dokumentasi.</p>
+        </div>
+
+        <form id="borrowerForm">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Data Peminjam</div><div class="card-sub">Kolom bertanda * wajib diisi.</div></div></div>
+            <div class="form-grid">
+              <div class="field2"><label>Marketing <span class="req">*</span></label><input id="marketing" required placeholder="Nama marketing"></div>
+              <div class="field2"><label>Nama Lengkap <span class="req">*</span></label><input id="nama" required placeholder="Nama lengkap peminjam"></div>
+              <div class="field2"><label>NIK <span class="req">*</span></label><input id="nik" maxlength="16" inputmode="numeric" required placeholder="16 digit NIK"></div>
+              <div class="field2"><label>No. HP <span class="req">*</span></label><input id="noHp" inputmode="tel" required placeholder="08xxxxxxxxxx"></div>
+              <div class="field2"><label>No. HP Pasangan</label><input id="noHpPasangan" inputmode="tel" placeholder="Nomor HP pasangan"></div>
+              <div class="field2"><label>No. HP Keluarga</label><input id="noHpKeluarga" inputmode="tel" placeholder="Nomor HP keluarga"></div>
+              <div class="field2 full"><label>Alamat Lengkap <span class="req">*</span></label><textarea id="alamat" required placeholder="Alamat lengkap peminjam"></textarea></div>
+              <div class="field2 full"><label>Link Google Maps</label><input id="maps" type="url" placeholder="https://maps.google.com/..."></div>
+              <div class="full info">PDF dibuat langsung di browser. Foto tidak disimpan ke GitHub dan tidak dikirim ke server. Setelah selesai, file PDF tersimpan melalui proses download biasa di perangkat kamu.</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:18px">
+            <div class="card-head"><div><div class="card-title">Dokumentasi</div><div class="card-sub">KTP, KK, Rumah, dan Selfie wajib. Sosmed & Identitas opsional.</div></div></div>
+
+            <div class="upload-grid">
+              <div class="upload"><div class="upload-title">Foto KTP <em>*</em></div><div class="preview" id="preview-ktp">Belum ada foto</div><input id="file-ktp" type="file" accept="image/*"></div>
+              <div class="upload"><div class="upload-title">Foto KK <em>*</em></div><div class="preview" id="preview-kk">Belum ada foto</div><input id="file-kk" type="file" accept="image/*"></div>
+              <div class="upload"><div class="upload-title">Foto Rumah <em>*</em></div><div class="preview" id="preview-rumah">Belum ada foto</div><input id="file-rumah" type="file" accept="image/*"></div>
+              <div class="upload"><div class="upload-title">Foto Selfie <em>*</em></div><div class="preview" id="preview-selfie">Belum ada foto</div><input id="file-selfie" type="file" accept="image/*"></div>
+              <div class="upload"><div class="upload-title">Foto Sosmed</div><div class="preview" id="preview-sosmed">Opsional</div><input id="file-sosmed" type="file" accept="image/*"></div>
+              <div class="upload"><div class="upload-title">Foto Identitas</div><div class="preview" id="preview-identitas">Opsional</div><input id="file-identitas" type="file" accept="image/*"></div>
+            </div>
+
+            <div class="actions">
+              <button type="button" class="btn ghost" id="resetFormBtn">Reset Form</button>
+              <button type="submit" class="btn primary" id="createPdfBtn">BUAT & DOWNLOAD PDF</button>
+            </div>
+            <div id="formStatus" style="margin-top:10px;font-size:11px;font-weight:800"></div>
+          </div>
+        </form>
+      </section>
+
+      <!-- HISTORY -->
+      <section id="page-history" class="page">
+        <div class="page-intro">
+          <h2>Riwayat PDF</h2>
+          <p>Riwayat hanya disimpan secara lokal di browser ini. File PDF tetap berada di folder download perangkat.</p>
+        </div>
+        <div class="card">
+          <div class="searchbar">
+            <input id="historySearch" placeholder="Cari nama, marketing, atau ID arsip...">
+            <button class="btn ghost" id="clearHistorySearch">Bersihkan</button>
+            <button class="btn ghost" id="clearHistory">Hapus Riwayat</button>
+          </div>
+          <div id="historyTable"></div>
+        </div>
+      </section>
+
+      <!-- GUIDE -->
+      <section id="page-guide" class="page">
+        <div class="page-intro"><h2>Panduan</h2><p>Informasi penggunaan aplikasi.</p></div>
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Alur Kerja</div><div class="card-sub">Urutan proses saat membuat arsip.</div></div></div>
+            <div class="steps" style="margin-top:0">
+              <div class="step done"><span class="dot"></span>Login ke aplikasi</div>
+              <div class="step done"><span class="dot"></span>Isi biodata peminjam</div>
+              <div class="step done"><span class="dot"></span>Upload 4–6 dokumentasi</div>
+              <div class="step done"><span class="dot"></span>Klik Buat & Download PDF</div>
+              <div class="step done"><span class="dot"></span>Simpan file PDF di komputer</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Privasi & Keamanan</div><div class="card-sub">Pahami batasan versi GitHub-only.</div></div></div>
+            <div class="info">
+              Aplikasi ini tidak mempunyai backend dan tidak menyimpan data di Google Drive/Spreadsheet. Karena itu foto diproses di browser. Namun login bukan keamanan server-side: username/password di file HTML secara teknis dapat dilihat melalui source code. Gunakan password khusus untuk aplikasi ini dan jangan gunakan password email/Google.
+            </div>
+            <div style="height:10px"></div>
+            <div class="info">
+              Untuk arsip jangka panjang, simpan PDF hasil download ke lokasi yang aman dan lakukan backup teratur.
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- LOADING -->
+<div class="overlay" id="overlay">
+  <div class="loader">
+    <div class="loader-row">
+      <div class="spinner"></div>
+      <div><div class="loader-title" id="loaderTitle">Memproses...</div><div class="loader-desc" id="loaderDesc">Mohon tunggu.</div></div>
+    </div>
+    <div class="bar"><i id="progress"></i></div>
+    <div class="steps">
+      <div class="step" id="load1"><span class="dot"></span>Validasi data</div>
+      <div class="step" id="load2"><span class="dot"></span>Memproses foto</div>
+      <div class="step" id="load3"><span class="dot"></span>Menyusun PDF</div>
+      <div class="step" id="load4"><span class="dot"></span>Menyiapkan download</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===============================
+   KONFIGURASI LOGIN
+   GANTI 2 NILAI INI
+   =============================== */
+const LOGIN_CONFIG = {
+  username: "admin",
+  password: "admin123"
+};
+
+const PHOTO_KEYS = ["ktp","kk","rumah","selfie","sosmed","identitas"];
+const REQUIRED_PHOTOS = ["ktp","kk","rumah","selfie"];
+const photoState = {};
+let busy = false;
+
+const $ = id => document.getElementById(id);
+
+function toast(msg,type=""){
+  const el=$("toast"); el.textContent=msg; el.className="toast show "+type;
+  clearTimeout(toast.t); toast.t=setTimeout(()=>el.className="toast",3600);
+}
+function showLoading(show,title="",desc="",pct=0){
+  $("overlay").classList.toggle("show",show);
+  if(show){$("loaderTitle").textContent=title;$("loaderDesc").textContent=desc;$("progress").style.width=pct+"%";}
+}
+function setStep(n,state="active"){
+  for(let i=1;i<=4;i++) $("load"+i).className="step";
+  for(let i=1;i<n;i++) $("load"+i).className="step done";
+  $("load"+n).className="step "+state;
+}
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+function today(){return new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"})}
+function timeNow(){return new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"})}
+function safe(s){return String(s||"").replace(/[\\/:*?"<>|#%{}~&]/g,"-").replace(/\s+/g," ").trim().slice(0,100)}
+function digits(s){return String(s||"").replace(/\D/g,"")}
+function archiveId(){
+  const d=new Date(), p=n=>String(n).padStart(2,"0");
+  const date=d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());
+  const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let r="";
+  for(let i=0;i<6;i++) r+=chars[Math.floor(Math.random()*chars.length)];
+  return "ARS-"+date+"-"+r;
+}
+function getHistory(){try{return JSON.parse(localStorage.getItem("arsipHistory")||"[]")}catch{return[]}}
+function setHistory(v){localStorage.setItem("arsipHistory",JSON.stringify(v.slice(0,100)))}
+function refreshStats(){
+  const h=getHistory(), uniq=new Set(h.map(x=>x.nik||x.nama)).size;
+  $("statPdf").textContent=h.length;
+  $("statBorrower").textContent=uniq;
+  $("statPhotos").textContent=h.reduce((a,x)=>a+(x.photos||0),0);
+  const ds=new Date().toISOString().slice(0,10);
+  $("statToday").textContent=h.filter(x=>x.dateKey===ds).length;
+  renderDashboardHistory(h.slice(0,7));
+  renderHistory();
+}
+function renderDashboardHistory(items){
+  const el=$("dashboardHistory");
+  if(!items.length){el.innerHTML='<div class="history-empty">Belum ada PDF dibuat di perangkat ini.</div>';return}
+  let out='<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Marketing</th><th>PDF</th></tr></thead><tbody>';
+  for(const x of items) out+=`<tr><td>${x.time}</td><td><b>${escapeHtml(x.nama)}</b><br><small>${escapeHtml(x.id)}</small></td><td>${escapeHtml(x.marketing)}</td><td><span class="badge">Selesai</span></td></tr>`;
+  out+='</tbody></table></div>';el.innerHTML=out;
+}
+function renderHistory(){
+  const el=$("historyTable"), q=($("historySearch").value||"").toLowerCase().trim(), h=getHistory().filter(x=>
+    !q || [x.id,x.nama,x.marketing,x.nik,x.filename].join(" ").toLowerCase().includes(q)
+  );
+  if(!h.length){el.innerHTML='<div class="history-empty">Tidak ada riwayat yang cocok.</div>';return}
+  let out='<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>ID Arsip</th><th>Peminjam</th><th>Marketing</th><th>Foto</th><th>File PDF</th></tr></thead><tbody>';
+  for(const x of h) out+=`<tr><td>${x.time}</td><td><b>${x.id}</b></td><td>${escapeHtml(x.nama)}<br><small>${x.nik}</small></td><td>${escapeHtml(x.marketing)}</td><td>${x.photos}</td><td>${escapeHtml(x.filename)}</td></tr>`;
+  out+='</tbody></table></div>';el.innerHTML=out;
+}
+function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+function showPage(name){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const page=$("page-"+name);if(page)page.classList.add("active");
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+  const titles={dashboard:"Dashboard",input:"Input Peminjam",history:"Riwayat PDF",guide:"Panduan"};
+  $("pageTitle").textContent=titles[name]||"ARSIP PINJAMAN";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+document.querySelectorAll("[data-page-jump]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.pageJump)));
+
+$("togglePassword").addEventListener("click",()=>{
+  const p=$("password");p.type=p.type==="password"?"text":"password";$("togglePassword").textContent=p.type==="password"?"Lihat":"Sembunyikan";
+});
+function attemptLogin(){
+  const u=$("username").value.trim(),p=$("password").value;
+  if(u===LOGIN_CONFIG.username && p===LOGIN_CONFIG.password){
+    sessionStorage.setItem("appLogin","1");
+    $("loginPage").classList.add("hidden");$("app").classList.remove("hidden");refreshStats();toast("Selamat datang di ARSIP PINJAMAN","success");
+  }else $("loginError").textContent="Username atau password salah.";
+}
+$("loginBtn").addEventListener("click",attemptLogin);
+$("password").addEventListener("keydown",e=>{if(e.key==="Enter")attemptLogin()});
+$("logoutBtn").addEventListener("click",()=>{
+  sessionStorage.removeItem("appLogin");$("app").classList.add("hidden");$("loginPage").classList.remove("hidden");$("username").focus();
+});
+if(sessionStorage.getItem("appLogin")==="1"){$("loginPage").classList.add("hidden");$("app").classList.remove("hidden")}
+
+$("nik").addEventListener("input",e=>e.target.value=digits(e.target.value).slice(0,16));
+
+for(const key of PHOTO_KEYS){
+  $("file-"+key).addEventListener("change",e=>{
+    const f=e.target.files[0]||null;photoState[key]=f;
+    const box=$("preview-"+key);
+    if(!f){box.textContent=(key==="sosmed"||key==="identitas")?"Opsional":"Belum ada foto";return}
+    if(f.size>10*1024*1024){toast("Foto "+key.toUpperCase()+" lebih dari 10 MB.","error");e.target.value="";delete photoState[key];box.textContent="Belum ada foto";return}
+    const url=URL.createObjectURL(f);box.innerHTML='<img alt="Preview">';box.querySelector("img").src=url;
+  });
+}
+
+function resetForm(){
+  $("borrowerForm").reset();
+  for(const k of Object.keys(photoState)) delete photoState[k];
+  for(const k of PHOTO_KEYS) $("preview-"+k).innerHTML=(k==="sosmed"||k==="identitas")?"Opsional":"Belum ada foto";
+  $("formStatus").textContent="";
+}
+$("resetFormBtn").addEventListener("click",()=>{if(!busy && confirm("Reset semua data dan foto di form?"))resetForm()});
+$("quickReset").addEventListener("click",()=>{if(!busy && confirm("Reset semua data dan foto di form?")){resetForm();showPage("input")}});
+
+async function imageData(file,maxSide=1800,quality=.84){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();r.onerror=()=>reject(new Error("Gagal membaca foto."));
+    r.onload=()=>{
+      const img=new Image();img.onerror=()=>reject(new Error("Foto tidak dapat diproses."));
+      img.onload=()=>{
+        const ratio=Math.min(1,maxSide/Math.max(img.width,img.height));
+        const w=Math.max(1,Math.round(img.width*ratio)),h=Math.max(1,Math.round(img.height*ratio));
+        const c=document.createElement("canvas");c.width=w;c.height=h;
+        c.getContext("2d",{alpha:false}).drawImage(img,0,0,w,h);
+        resolve(c.toDataURL("image/jpeg",quality));
+      };
+      img.src=r.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+function addField(doc,label,value,y){
+  doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.text(label,16,y);
+  doc.setFont("helvetica","normal");doc.setFontSize(9.5);
+  const lines=doc.splitTextToSize(String(value||"-"),125);doc.text(lines,67,y);
+  return y+Math.max(6,lines.length*4.7);
+}
+async function fitImage(doc,dataUrl){
+  return new Promise(resolve=>{
+    const img=new Image();img.onload=()=>{
+      const margin=12,maxW=210-margin*2,maxH=297-53,ratio=Math.min(maxW/img.width,maxH/img.height);
+      const w=img.width*ratio,h=img.height*ratio,x=(210-w)/2,y=34+(maxH-h)/2;
+      doc.addImage(dataUrl,"JPEG",x,y,w,h,undefined,"FAST");resolve();
+    };img.src=dataUrl;
+  });
+}
+function header(doc,title){
+  doc.setFont("helvetica","bold");doc.setFontSize(15);doc.text(title,105,16,{align:"center"});
+  doc.setDrawColor(211,219,228);doc.line(12,22,198,22);
+}
+async function buildPdf(){
+  const {jsPDF}=window.jspdf||{};if(!jsPDF)throw new Error("Library PDF belum termuat. Periksa internet lalu refresh halaman.");
+  const id=archiveId(), now=new Date();
+  const nama=$("nama").value.trim(), nik=digits($("nik").value.trim()), marketing=$("marketing").value.trim();
+  const doc=new jsPDF({unit:"mm",format:"a4",compress:true});
+  header(doc,"ARSIP PINJAMAN");
+  let y=33;
+  y=addField(doc,"ID Arsip",id,y);y=addField(doc,"Tanggal",now.toLocaleString("id-ID"),y);
+  y=addField(doc,"Marketing",marketing,y);y=addField(doc,"Nama Lengkap",nama,y);
+  y=addField(doc,"NIK",nik,y);y=addField(doc,"No. HP",$("noHp").value.trim(),y);
+  y=addField(doc,"No. HP Pasangan",$("noHpPasangan").value.trim(),y);
+  y=addField(doc,"No. HP Keluarga",$("noHpKeluarga").value.trim(),y);
+  y=addField(doc,"Google Maps",$("maps").value.trim(),y);
+  doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.text("Alamat",16,y);
+  doc.setFont("helvetica","normal");const al=doc.splitTextToSize($("alamat").value.trim(),178);doc.text(al,16,y+5);
+  y+=Math.max(18,al.length*4.7+10);
+  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Dokumentasi",16,y);
+  doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.text("Dokumentasi berikut merupakan bagian dari arsip peminjam.",16,y+5);
+  let photos=0;
+  const labels={ktp:"FOTO KTP",kk:"FOTO KK",rumah:"FOTO RUMAH",selfie:"FOTO SELFIE",sosmed:"FOTO SOSMED",identitas:"FOTO IDENTITAS"};
+  for(const key of PHOTO_KEYS){
+    if(!photoState[key]) continue;
+    const data=await imageData(photoState[key]);photos++;
+    doc.addPage();header(doc,labels[key]);await fitImage(doc,data);
+    doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(100,110,125);
+    doc.text(nama+" • "+id,12,287);doc.setTextColor(23,32,51);
+  }
+  return {doc,id,nama,nik,marketing,photos,time:now.toLocaleString("id-ID"),dateKey:now.toISOString().slice(0,10)};
+}
+
+$("borrowerForm").addEventListener("submit",async e=>{
+  e.preventDefault();if(busy)return;
+  const nik=digits($("nik").value.trim());
+  let err="";
+  if(!$("marketing").value.trim())err="Marketing wajib diisi.";
+  else if(!$("nama").value.trim())err="Nama lengkap wajib diisi.";
+  else if(!/^\d{16}$/.test(nik))err="NIK harus 16 digit angka.";
+  else if(!$("noHp").value.trim())err="No. HP wajib diisi.";
+  else if(!$("alamat").value.trim())err="Alamat wajib diisi.";
+  else for(const k of REQUIRED_PHOTOS)if(!photoState[k]){err="Foto "+k.toUpperCase()+" wajib diupload.";break}
+  if(err){$("formStatus").textContent=err;$("formStatus").style.color="var(--danger)";toast(err,"error");return}
+
+  busy=true;$("createPdfBtn").disabled=true;$("resetFormBtn").disabled=true;
+  try{
+    showLoading(true,"Memvalidasi data...","Memeriksa kolom wajib.",12);setStep(1);await wait(250);
+    showLoading(true,"Memproses foto...","Mengompres foto agar PDF stabil.",36);setStep(2);await wait(250);
+    showLoading(true,"Menyusun PDF...","Menggabungkan biodata dan dokumentasi.",68);setStep(3);
+    const result=await buildPdf();
+    showLoading(true,"Menyiapkan download...","PDF selesai, menyiapkan file.",94);setStep(4);await wait(350);
+    const filename="ARSIP PINJAMAN - "+safe(result.nama)+" - "+result.nik+".pdf";
+    result.doc.save(filename);setStep(4,"done");showLoading(false);
+    const h=getHistory();h.unshift({id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename});setHistory(h);
+    refreshStats();
+    $("formStatus").textContent="Berhasil. PDF sudah dibuat: "+filename;$("formStatus").style.color="var(--success)";
+    toast("PDF berhasil dibuat dan didownload.","success");
+  }catch(ex){
+    showLoading(false);const msg=ex?.message||"Gagal membuat PDF.";
+    $("formStatus").textContent=msg;$("formStatus").style.color="var(--danger)";toast(msg,"error");
+  }finally{busy=false;$("createPdfBtn").disabled=false;$("resetFormBtn").disabled=false}
+});
+
+$("historySearch").addEventListener("input",renderHistory);
+$("clearHistorySearch").addEventListener("click",()=>{$("historySearch").value="";renderHistory()});
+$("clearHistory").addEventListener("click",()=>{
+  if(confirm("Hapus seluruh riwayat lokal? File PDF yang sudah didownload tidak ikut terhapus.")){localStorage.removeItem("arsipHistory");refreshStats();toast("Riwayat lokal dihapus.","success")}
+});
+
+$("topDate").textContent=today();
+$("sidebarDate").textContent=timeNow();
+refreshStats();
+</script>
+</body>
+</html>
