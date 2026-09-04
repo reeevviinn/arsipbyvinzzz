@@ -3,14 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ARSIP PINJAMAN • Professional Edition</title>
+<title>ASCARINDO FINANCE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
 <style>
 :root{
-  --navy:#10243e;--navy2:#173c67;--blue:#2f6ea5;--blue2:#4f8fca;
-  --bg:#f4f7fb;--card:#fff;--text:#182334;--muted:#738096;
-  --line:#e2e8f0;--soft:#f8fafc;--success:#17805e;--danger:#c62828;
-  --warning:#b86a00;--shadow:0 14px 40px rgba(16,36,62,.09)
+  --navy:#080c16;
+  --navy2:#11182a;
+  --blue:#4f7cff;
+  --blue2:#6d5dfc;
+  --bg:#070a11;
+  --card:#0e1420;
+  --text:#eef2f8;
+  --muted:#8b97aa;
+  --line:#202a3b;
+  --soft:#0b111c;
+  --success:#39c795;
+  --danger:#ef6678;
+  --warning:#d9a65c;
+  --shadow:0 18px 50px rgba(0,0,0,.32)
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:Inter,Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg)}
@@ -24,55 +34,251 @@ button{cursor:pointer}
  linear-gradient(135deg,#0d213a 0%,#173b65 52%,#245b8f 100%);position:relative;overflow:hidden}
 .login-page:before,.login-page:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
 .login-page:before{width:500px;height:500px;right:-160px;top:-180px}.login-page:after{width:380px;height:380px;left:-160px;bottom:-130px}
-.login-card{width:min(980px,100%);min-height:570px;background:rgba(255,255,255,.98);border-radius:28px;overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr;box-shadow:0 35px 90px rgba(0,0,0,.25);position:relative;z-index:1}
-.login-hero{padding:54px;background:linear-gradient(160deg,#10243e,#1a456f);color:#fff;display:flex;flex-direction:column;justify-content:space-between}
+.login-card{width:min(760px,100%);min-height:470px;background:#111d2c;border-radius:28px;overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr;box-shadow:0 35px 90px rgba(0,0,0,.25);position:relative;z-index:1}
+.login-hero{padding:38px;background:linear-gradient(160deg,#0c1424,#111b31);color:#fff;display:flex;flex-direction:column;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:12px}
 .logo-mark{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-weight:900}
 .logo-title{font-size:20px;font-weight:900;letter-spacing:.3px}.logo-sub{font-size:11px;color:#bcd0e3;margin-top:3px}
-.hero-copy{max-width:460px}.hero-copy h1{font-size:37px;line-height:1.08;margin:0 0 16px}.hero-copy p{color:#c8d7e8;line-height:1.7;font-size:14px}
+.hero-copy{max-width:460px}.hero-copy h1{font-size:31px;line-height:1.08;margin:0 0 16px}.hero-copy p{color:#c8d7e8;line-height:1.7;font-size:14px}
 .hero-pills{display:flex;gap:8px;flex-wrap:wrap}.hero-pill{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);padding:8px 10px;border-radius:999px;font-size:11px}
-.login-form{padding:54px;display:flex;flex-direction:column;justify-content:center}
+.login-form{padding:38px;display:flex;flex-direction:column;justify-content:center}
 .eyebrow{font-size:11px;font-weight:900;color:var(--blue);letter-spacing:.12em;text-transform:uppercase}
 .login-form h2{font-size:28px;margin:9px 0 7px}.login-form p{color:var(--muted);font-size:13px;margin:0 0 28px}
-.field{margin-bottom:15px}.field label{font-size:12px;font-weight:800;display:block;margin-bottom:7px}.input-wrap{position:relative}.input-wrap input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:11px;outline:none;background:#fff;transition:.18s}.input-wrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,110,165,.1)}
+.field{margin-bottom:15px}.field label{font-size:12px;font-weight:800;display:block;margin-bottom:7px}.input-wrap{position:relative}.input-wrap input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:11px;outline:none;background:#0d1826;color:#e7edf5;transition:.18s}.input-wrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,110,165,.1)}
 .password-toggle{position:absolute;right:9px;top:7px;border:0;background:transparent;color:var(--muted);padding:8px}
-.login-btn{width:100%;border:0;background:linear-gradient(135deg,var(--navy2),var(--blue));color:#fff;border-radius:11px;padding:14px;font-weight:900;margin-top:6px;box-shadow:0 9px 22px rgba(23,60,103,.22)}
-.login-note{margin-top:16px;background:#f8fafc;border:1px dashed #ced8e4;border-radius:10px;padding:10px 12px;font-size:10.5px;color:#65748a;line-height:1.45}
+.login-btn{width:100%;border:0;background:linear-gradient(135deg,#4b4cf4,#3d82ff);color:#fff;border-radius:11px;padding:14px;font-weight:900;margin-top:6px;box-shadow:0 9px 22px rgba(23,60,103,.22)}
+.login-note{margin-top:16px;background:#0e1927;border:1px dashed #2a374b;border-radius:10px;padding:10px 12px;font-size:10.5px;color:#9aa9bb;line-height:1.45}
 .login-error{min-height:19px;color:var(--danger);font-size:12px;font-weight:700;margin:8px 0 0}
 
 /* APP */
 .app-shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:var(--navy);color:#fff;padding:22px 15px;display:flex;flex-direction:column;z-index:50}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:linear-gradient(180deg,#0a0f1b 0%,#070b13 100%);color:#fff;padding:22px 15px;display:flex;flex-direction:column;z-index:50}
 .side-brand{padding:9px 11px 22px;border-bottom:1px solid rgba(255,255,255,.11);margin-bottom:18px}.side-brand .title{font-size:19px;font-weight:900}.side-brand .sub{font-size:11px;color:#a9bad0;margin-top:5px}
 .nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#dbe6f0;padding:12px 13px;text-align:left;border-radius:10px;font-size:13px;font-weight:700}.nav button:hover,.nav button.active{background:rgba(255,255,255,.095);color:#fff}
 .side-bottom{margin-top:auto;border-top:1px solid rgba(255,255,255,.11);padding-top:14px}.user-chip{font-size:12px;font-weight:800}.user-chip small{display:block;color:#9fb0c4;font-weight:500;margin-top:3px}.logout{margin-top:11px;width:100%;border:1px solid rgba(255,255,255,.18);background:transparent;color:#f0c9c5;padding:9px 10px;border-radius:9px;font-size:11px;font-weight:800}
-.main{grid-column:2;padding:0;min-width:0}.topbar{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:40}.page-title{font-size:20px;font-weight:900}.top-actions{display:flex;align-items:center;gap:10px}.date-chip{font-size:11px;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:8px 10px}
+.main{grid-column:2;padding:0;min-width:0}.topbar{height:72px;background:rgba(9,13,22,.88);border-bottom:1px solid var(--line);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:40}.page-title{font-size:20px;font-weight:900}.top-actions{display:flex;align-items:center;gap:10px}.date-chip{font-size:11px;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:8px 10px}
 .content{padding:28px;max-width:1600px;margin:auto}.page{display:none;animation:fade .2s ease}.page.active{display:block}@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .page-intro{margin-bottom:22px}.page-intro h2{margin:0;font-size:23px}.page-intro p{margin:6px 0 0;color:var(--muted);font-size:12px}
-.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:19px;box-shadow:var(--shadow);position:relative;overflow:hidden}.stat:after{content:"";position:absolute;right:-24px;top:-24px;width:85px;height:85px;border-radius:50%;background:#edf4fb}.stat-label{font-size:11px;color:var(--muted);font-weight:800}.stat-value{font-size:27px;font-weight:900;margin-top:7px}.stat-hint{font-size:10px;color:#8a97aa;margin-top:4px}
-.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:16px}.card-title{font-size:15px;font-weight:900}.card-sub{font-size:11px;color:var(--muted);margin-top:4px}
-.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.quick button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:15px;text-align:left;transition:.18s}.quick button:hover{border-color:#b9cbe0;transform:translateY(-1px);box-shadow:0 8px 20px rgba(16,36,62,.06)}.quick strong{font-size:12px;display:block}.quick span{font-size:10px;color:var(--muted)}
-.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid #edf1f5;font-size:11px;white-space:nowrap}th{font-size:10px;color:#637186;text-transform:uppercase;letter-spacing:.04em;background:#fafbfd}td small{color:var(--muted)}
-.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:900;background:#eaf7f1;color:var(--success)}
-.badge.warn{background:#fff4e6;color:var(--warning)}
-.badge.err{background:#fdeeee;color:var(--danger)}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:19px;box-shadow:var(--shadow);position:relative;overflow:hidden}.stat:after{content:"";position:absolute;right:-30px;top:-30px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(79,124,255,.16),transparent 68%)}.stat-label{font-size:11px;color:var(--muted);font-weight:800}.stat-value{font-size:27px;font-weight:900;margin-top:7px}.stat-hint{font-size:10px;color:#8a97aa;margin-top:4px}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:16px}.card-title{font-size:15px;font-weight:900}.card-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.quick button{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:15px;text-align:left;transition:.18s}.quick button:hover{border-color:#b9cbe0;transform:translateY(-1px);box-shadow:0 8px 20px rgba(16,36,62,.06)}.quick strong{font-size:12px;display:block}.quick span{font-size:10px;color:var(--muted)}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid #edf1f5;font-size:11px;white-space:nowrap}th{font-size:10px;color:#9eacbe;text-transform:uppercase;letter-spacing:.04em;background:#0e1927}td small{color:var(--muted)}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:900;background:#16372f;color:var(--success)}
+.badge.warn{background:#3a2b18;color:var(--warning)}
+.badge.err{background:#3b1d22;color:var(--danger)}
 
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.req{color:var(--danger)}.full{grid-column:1/-1}.field2 label{font-size:12px;font-weight:800;display:block;margin-bottom:7px}.field2 input,.field2 textarea,.field2 select{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 13px;outline:none;background:#fff}.field2 textarea{min-height:110px;resize:vertical}.field2 input:focus,.field2 textarea:focus,.field2 select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,110,165,.08)}
-.upload-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.upload{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fbfcfe}.upload-title{font-size:12px;font-weight:900;margin-bottom:9px}.upload-title em{font-style:normal;color:var(--danger)}.preview{height:165px;border-radius:10px;background:#eef2f7;display:grid;place-items:center;overflow:hidden;color:#8b97a8;font-size:11px;text-align:center;padding:8px}.preview img{max-width:100%;max-height:100%;display:block;object-fit:contain}.upload input[type=file]{width:100%;font-size:10px;margin-top:9px}
-.actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.btn{border:0;border-radius:10px;padding:11px 15px;font-size:12px;font-weight:900}.btn.primary{background:var(--navy2);color:#fff}.btn.primary:hover{filter:brightness(1.06)}.btn.ghost{background:#edf2f7;color:#304156}.btn.success{background:var(--success);color:#fff}
-.info{font-size:11px;line-height:1.55;color:#627086;background:#f8fafc;border:1px dashed #ced8e4;padding:11px 12px;border-radius:11px}
-.searchbar{display:flex;gap:9px;margin-bottom:16px}.searchbar input{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none}.searchbar select{width:180px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:#fff}
-.history-empty{text-align:center;padding:40px;color:#8794a7;font-size:12px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.req{color:var(--danger)}.full{grid-column:1/-1}.field2 label{font-size:12px;font-weight:800;display:block;margin-bottom:7px}.field2 input,.field2 textarea,.field2 select{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 13px;outline:none;background:#0d1826;color:#e7edf5}.field2 textarea{min-height:110px;resize:vertical}.field2 input:focus,.field2 textarea:focus,.field2 select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,110,165,.08)}
+.upload-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.upload{border:1px solid var(--line);border-radius:14px;padding:13px;background:#0e1927}.upload-title{font-size:12px;font-weight:900;margin-bottom:9px}.upload-title em{font-style:normal;color:var(--danger)}.preview{height:165px;border-radius:10px;background:#172536;display:grid;place-items:center;overflow:hidden;color:#8c9aad;font-size:11px;text-align:center;padding:8px}.preview img{max-width:100%;max-height:100%;display:block;object-fit:contain}.upload input[type=file]{width:100%;font-size:10px;margin-top:9px}
+.actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.btn{border:0;border-radius:10px;padding:11px 15px;font-size:12px;font-weight:900}.btn.primary{background:var(--navy2);color:#fff}.btn.primary:hover{filter:brightness(1.06)}.btn.ghost{background:#182638;color:#d7e0eb}.btn.success{background:var(--success);color:#fff}
+.info{font-size:11px;line-height:1.55;color:#a8b5c5;background:#0e1927;border:1px dashed #2a374b;padding:11px 12px;border-radius:11px}
+.searchbar{display:flex;gap:9px;margin-bottom:16px}.searchbar input{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none}.searchbar select{width:180px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--card)}
+.history-empty{text-align:center;padding:40px;color:#8191a6;font-size:12px}
 
 /* LOADER */
-.overlay{position:fixed;inset:0;background:rgba(10,20,32,.64);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:9999}.overlay.show{display:flex}.loader{width:min(460px,100%);background:#fff;border-radius:20px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.28)}.loader-row{display:flex;gap:13px;align-items:center}.spinner{width:44px;height:44px;border-radius:50%;border:4px solid #e9eef4;border-top-color:var(--blue);animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.loader-title{font-size:16px;font-weight:900}.loader-desc{font-size:11px;color:var(--muted);margin-top:3px}.bar{height:8px;background:#edf1f5;border-radius:999px;overflow:hidden;margin-top:18px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy2),var(--blue2));transition:width .25s}.steps{margin-top:17px;display:grid;gap:8px}.step{font-size:11px;color:#8b97a8;display:flex;gap:8px;align-items:center}.step .dot{width:8px;height:8px;border-radius:50%;background:#d7dee7}.step.done{color:var(--success);font-weight:700}.step.done .dot{background:var(--success)}.step.active{color:var(--navy2);font-weight:900}.step.active .dot{background:var(--navy2)}
+.overlay{position:fixed;inset:0;background:rgba(10,20,32,.64);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:9999}.overlay.show{display:flex}.loader{width:min(460px,100%);background:var(--card);border-radius:20px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.28)}.loader-row{display:flex;gap:13px;align-items:center}.spinner{width:44px;height:44px;border-radius:50%;border:4px solid #e9eef4;border-top-color:var(--blue);animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.loader-title{font-size:16px;font-weight:900}.loader-desc{font-size:11px;color:var(--muted);margin-top:3px}.bar{height:8px;background:#1d2a3a;border-radius:999px;overflow:hidden;margin-top:18px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4b4cf4,#38bdf8);transition:width .25s}.steps{margin-top:17px;display:grid;gap:8px}.step{font-size:11px;color:#8c9aad;display:flex;gap:8px;align-items:center}.step .dot{width:8px;height:8px;border-radius:50%;background:#d7dee7}.step.done{color:var(--success);font-weight:700}.step.done .dot{background:var(--success)}.step.active{color:var(--navy2);font-weight:900}.step.active .dot{background:var(--navy2)}
 
 .toast{position:fixed;right:22px;bottom:22px;min-width:280px;max-width:430px;display:none;z-index:10000;padding:13px 15px;border-radius:11px;background:#172033;color:#fff;font-size:12px;box-shadow:0 12px 30px rgba(0,0,0,.2)}.toast.show{display:block}.toast.success{background:var(--success)}.toast.error{background:var(--danger)}
 
 @media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.upload-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){.app-shell{display:block}.sidebar{position:static;width:100%;height:auto;padding:12px;display:block}.side-brand{padding:8px 10px 12px;margin-bottom:8px}.nav{display:grid;grid-template-columns:repeat(4,1fr)}.nav button{text-align:center;font-size:10px;padding:9px 6px}.side-bottom{display:none}.topbar{position:static;padding:0 16px}.content{padding:17px}.login-card{grid-template-columns:1fr}.login-hero{display:none}}
 @media(max-width:600px){.cards{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.upload-grid{grid-template-columns:1fr}.searchbar{flex-direction:column}.searchbar select{width:100%}.cards .stat-value{font-size:22px}}
+
+/* SIMPLE LOADING */
+.simple-loading{position:fixed;inset:0;background:rgba(10,20,32,.52);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:20000}
+.simple-loading.show{display:flex}
+.simple-loading-box{background:var(--card);border-radius:16px;padding:20px 24px;min-width:230px;max-width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+.simple-spinner{width:34px;height:34px;margin:0 auto 12px;border:4px solid #e8edf3;border-top-color:var(--blue);border-radius:50%;animation:simpleSpin .7s linear infinite}
+@keyframes simpleSpin{to{transform:rotate(360deg)}}
+.simple-loading-title{font-size:13px;font-weight:900}
+.simple-loading-text{font-size:10px;color:var(--muted);margin-top:4px}
+
+/* LIVE DATE & TIME */
+.date-chip{font-variant-numeric:tabular-nums;min-width:210px;text-align:center}
+
+/* ELEGANT DARK THEME */
+body{
+  background:
+    radial-gradient(circle at 80% 0%,rgba(79,124,255,.07),transparent 28%),
+    radial-gradient(circle at 55% 100%,rgba(109,93,252,.06),transparent 30%),
+    var(--bg);
+}
+.login-page{
+  background:
+    radial-gradient(circle at 20% 20%,rgba(79,124,255,.12),transparent 32%),
+    radial-gradient(circle at 85% 80%,rgba(109,93,252,.10),transparent 30%),
+    #060a12;
+}
+.login-card{
+  border:1px solid #202c42;
+  box-shadow:0 35px 100px rgba(0,0,0,.55),0 0 45px rgba(79,124,255,.04);
+}
+.login-form h2,
+.page-intro h2,
+.page-title{
+  color:#f3f6fb;
+}
+.login-btn,
+.btn.primary{
+  background:linear-gradient(135deg,#5148e8,#357cf6);
+}
+.login-btn:hover,
+.btn.primary:hover{
+  box-shadow:0 10px 30px rgba(79,124,255,.22);
+}
+.nav button.active,
+.nav button:hover{
+  background:linear-gradient(90deg,rgba(79,124,255,.14),rgba(109,93,252,.10));
+  box-shadow:inset 3px 0 0 #4f7cff;
+}
+.card,
+.stat{
+  box-shadow:0 14px 40px rgba(0,0,0,.22);
+}
+.card{
+  background:linear-gradient(145deg,#0f1624,#0b111c);
+}
+.stat{
+  background:linear-gradient(145deg,#111a2a,#0c131f);
+}
+.date-chip{
+  background:#0b111c;
+  color:#b2bfd1;
+}
+.field2 input,
+.field2 textarea,
+.field2 select,
+.searchbar input,
+.searchbar select,
+.input-wrap input{
+  background:#0a111d;
+  color:#edf2f8;
+  border-color:#243149;
+}
+.field2 input::placeholder,
+.field2 textarea::placeholder,
+.searchbar input::placeholder,
+.input-wrap input::placeholder{
+  color:#5f6d82;
+}
+.upload{
+  background:#0b111c;
+}
+.preview{
+  background:#121b2a;
+}
+.info{
+  background:#0b111c;
+}
+.toast{
+  box-shadow:0 15px 40px rgba(0,0,0,.35);
+}
+.simple-loading-box,
+.loader{
+  background:#0e1522;
+  border:1px solid #243149;
+}
+.simple-spinner,
+.spinner{
+  border-color:#202d42;
+  border-top-color:#4f7cff;
+}
+
 </style>
+
+<style id="ascarindo-final-theme">
+:root{
+  --bg:#070a10;
+  --bg2:#0a0e17;
+  --card:#0f1521;
+  --card2:#111a29;
+  --border:rgba(148,163,184,.13);
+  --text:#f3f6fb;
+  --muted:#8d99ab;
+  --blue:#4f7cff;
+  --blue2:#765cff;
+  --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+html,body{
+  background:
+    radial-gradient(circle at 85% 0%,rgba(79,124,255,.09),transparent 30%),
+    radial-gradient(circle at 10% 90%,rgba(118,92,255,.055),transparent 28%),
+    var(--bg)!important;
+  color:var(--text)!important;
+}
+body{min-height:100vh}
+*{box-sizing:border-box}
+.sidebar,.side-bar,.app-sidebar{
+  background:rgba(9,13,21,.94)!important;
+  border-right:1px solid var(--border)!important;
+}
+.card,.stat-card,.panel,.box,.form-card,.table-card,.hero{
+  background:linear-gradient(145deg,rgba(17,24,38,.96),rgba(11,16,26,.96))!important;
+  border:1px solid var(--border)!important;
+  box-shadow:var(--shadow)!important;
+}
+input,select,textarea{
+  background:#0b111c!important;
+  color:var(--text)!important;
+  border:1px solid rgba(148,163,184,.16)!important;
+}
+input::placeholder,textarea::placeholder{color:#657184!important}
+button,.btn{
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+button:hover,.btn:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.05);
+}
+.btn-primary,.primary,.submit-btn{
+  background:linear-gradient(135deg,var(--blue),var(--blue2))!important;
+  border:0!important;
+  box-shadow:0 10px 28px rgba(79,124,255,.18)!important;
+}
+table{color:var(--text)!important}
+th{
+  background:#0b111b!important;
+  color:#9aa7b9!important;
+}
+td{
+  border-color:rgba(148,163,184,.09)!important;
+}
+tr:hover td{background:rgba(79,124,255,.035)!important}
+.badge,.status{
+  border-color:var(--border)!important;
+}
+h1,h2,h3,h4,strong{color:var(--text)}
+small,.muted,.subtitle,.description{color:var(--muted)!important}
+.loading-overlay,.loading-screen{
+  background:rgba(5,8,13,.94)!important;
+  backdrop-filter:blur(10px);
+}
+.modal,.dialog{
+  background:#0e1521!important;
+  border:1px solid var(--border)!important;
+  box-shadow:0 25px 80px rgba(0,0,0,.5)!important;
+}
+@media(max-width:900px){
+  .sidebar,.side-bar,.app-sidebar{width:78px!important}
+  main,.main-content,.content{margin-left:78px!important}
+}
+@media(max-width:680px){
+  .sidebar,.side-bar,.app-sidebar{
+    width:100%!important;
+    height:auto!important;
+    position:relative!important;
+    border-right:0!important;
+    border-bottom:1px solid var(--border)!important;
+  }
+  main,.main-content,.content{
+    margin-left:0!important;
+    width:100%!important;
+  }
+  .container,.content-inner{padding:18px!important}
+  table{font-size:12px}
+  .stat-card{min-width:0!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -82,22 +288,22 @@ button{cursor:pointer}
     <section class="login-hero">
       <div class="logo">
         <div class="logo-mark">AP</div>
-        <div><div class="logo-title">ARSIP PINJAMAN</div><div class="logo-sub">Professional Edition</div></div>
+        <div><div class="logo-title">ASCARINDO FINANCE</div><div class="logo-sub">Dokumentasi Peminjam</div></div>
       </div>
       <div class="hero-copy">
-        <h1>Kelola arsip peminjam dengan rapi.</h1>
-        <p>Form biodata, dokumentasi, preview foto, riwayat lokal, dan pembuatan PDF lengkap dalam satu aplikasi.</p>
+        <h1>Arsip Peminjam</h1>
+        <p>Simpan data peminjam dan buat PDF dengan cepat.</p>
         <div class="hero-pills">
-          <span class="hero-pill">PDF A4</span><span class="hero-pill">6 Dokumentasi</span><span class="hero-pill">Local Processing</span>
+          <span class="hero-pill">PDF A4</span><span class="hero-pill">6 Foto</span>
         </div>
       </div>
-      <div style="font-size:10px;color:#9fb4cb">Semua foto diproses di perangkat ini dan tidak diupload ke server aplikasi.</div>
+      <div style="font-size:10px;color:#9fb4cb">Data diproses di perangkat ini.</div>
     </section>
 
     <section class="login-form">
-      <div class="eyebrow">Secure Access</div>
-      <h2>Selamat datang</h2>
-      <p>Masuk untuk membuka dashboard arsip pinjaman.</p>
+      <div class="eyebrow">LOGIN</div>
+      <h2>Masuk</h2>
+      <p>Masukkan akun untuk melanjutkan.</p>
 
       <div class="field">
         <label for="username">Username</label>
@@ -112,11 +318,8 @@ button{cursor:pointer}
         </div>
       </div>
 
-      <button class="login-btn" id="loginBtn">MASUK KE APLIKASI</button>
+      <button class="login-btn" id="loginBtn">MASUK</button>
       <div class="login-error" id="loginError"></div>
-      <div class="login-note">
-        Login ini adalah <b>gerbang tampilan lokal</b>. Karena aplikasi 100% GitHub tanpa backend, kredensial yang ditulis di JavaScript dapat dilihat oleh orang yang membuka source code. Jangan gunakan password yang sama dengan akun Google/email.
-      </div>
     </section>
   </div>
 </div>
@@ -125,7 +328,7 @@ button{cursor:pointer}
 <div id="app" class="app-shell hidden">
   <aside class="sidebar">
     <div class="side-brand">
-      <div class="title">ARSIP PINJAMAN</div>
+      <div class="title">ASCARINDO FINANCE</div>
       <div class="sub">Sistem Dokumentasi Peminjam</div>
     </div>
 
@@ -133,7 +336,6 @@ button{cursor:pointer}
       <button class="active" data-page="dashboard">Dashboard</button>
       <button data-page="input">Input Peminjam</button>
       <button data-page="history">Riwayat PDF</button>
-      <button data-page="guide">Panduan</button>
     </nav>
 
     <div class="side-bottom">
@@ -154,30 +356,25 @@ button{cursor:pointer}
       <section id="page-dashboard" class="page active">
         <div class="page-intro">
           <h2>Dashboard</h2>
-          <p>Ringkasan aktivitas pembuatan arsip pada perangkat ini.</p>
+          <p>Ringkasan data.</p>
         </div>
 
         <div class="cards">
-          <div class="stat"><div class="stat-label">PDF DIBUAT</div><div class="stat-value" id="statPdf">0</div><div class="stat-hint">Riwayat lokal</div></div>
-          <div class="stat"><div class="stat-label">PEMINJAM</div><div class="stat-value" id="statBorrower">0</div><div class="stat-hint">Arsip unik di perangkat</div></div>
-          <div class="stat"><div class="stat-label">FOTO DIPROSES</div><div class="stat-value" id="statPhotos">0</div><div class="stat-hint">Total dokumentasi</div></div>
-          <div class="stat"><div class="stat-label">HARI INI</div><div class="stat-value" id="statToday">0</div><div class="stat-hint">PDF dibuat hari ini</div></div>
+          <div class="stat"><div class="stat-label">PDF DIBUAT</div><div class="stat-value" id="statPdf">0</div><div class="stat-hint">Tersimpan lokal</div></div>
+          <div class="stat"><div class="stat-label">PEMINJAM</div><div class="stat-value" id="statBorrower">0</div><div class="stat-hint">Data unik</div></div>
+          <div class="stat"><div class="stat-label">FOTO DIPROSES</div><div class="stat-value" id="statPhotos">0</div><div class="stat-hint">Jumlah foto</div></div>
+          <div class="stat"><div class="stat-label">HARI INI</div><div class="stat-value" id="statToday">0</div><div class="stat-hint">Hari ini</div></div>
         </div>
 
         <div class="grid2">
           <div class="card">
-            <div class="card-head"><div><div class="card-title">Aktivitas Terbaru</div><div class="card-sub">Riwayat PDF yang dibuat dari perangkat ini.</div></div><button class="btn ghost" data-page-jump="history">Lihat semua</button></div>
+            <div class="card-head"><div><div class="card-title">Terbaru</div></div><button class="btn ghost" data-page-jump="history">Lihat semua</button></div>
             <div id="dashboardHistory"></div>
           </div>
 
           <div class="card">
-            <div class="card-head"><div><div class="card-title">Akses Cepat</div><div class="card-sub">Mulai pekerjaan yang paling sering digunakan.</div></div></div>
-            <div class="quick">
-              <button data-page-jump="input"><strong>+ Input Peminjam</strong><span>Isi biodata & dokumentasi</span></button>
-              <button data-page-jump="history"><strong>Riwayat PDF</strong><span>Lihat file yang pernah dibuat</span></button>
-              <button id="quickReset"><strong>Reset Form</strong><span>Bersihkan data sementara</span></button>
-              <button data-page-jump="guide"><strong>Panduan</strong><span>Cara kerja aplikasi</span></button>
-            </div>
+            <div class="card-head"><div><div class="card-title">Menu Cepat</div></div></div>
+            
           </div>
         </div>
       </section>
@@ -185,13 +382,13 @@ button{cursor:pointer}
       <!-- INPUT -->
       <section id="page-input" class="page">
         <div class="page-intro">
-          <h2>Input Data Peminjam</h2>
-          <p>Lengkapi data lalu buat satu PDF lengkap beserta seluruh dokumentasi.</p>
+          <h2>Input Peminjam</h2>
+          <p>Isi data dan foto.</p>
         </div>
 
         <form id="borrowerForm">
           <div class="card">
-            <div class="card-head"><div><div class="card-title">Data Peminjam</div><div class="card-sub">Kolom bertanda * wajib diisi.</div></div></div>
+            <div class="card-head"><div><div class="card-title">Data Peminjam</div><div class="card-sub">* wajib</div></div></div>
             <div class="form-grid">
               <div class="field2"><label>Marketing <span class="req">*</span></label><input id="marketing" required placeholder="Nama marketing"></div>
               <div class="field2"><label>Nama Lengkap <span class="req">*</span></label><input id="nama" required placeholder="Nama lengkap peminjam"></div>
@@ -201,12 +398,12 @@ button{cursor:pointer}
               <div class="field2"><label>No. HP Keluarga</label><input id="noHpKeluarga" inputmode="tel" placeholder="Nomor HP keluarga"></div>
               <div class="field2 full"><label>Alamat Lengkap <span class="req">*</span></label><textarea id="alamat" required placeholder="Alamat lengkap peminjam"></textarea></div>
               <div class="field2 full"><label>Link Google Maps</label><input id="maps" type="url" placeholder="https://maps.google.com/..."></div>
-              <div class="full info">PDF dibuat langsung di browser. Foto tidak disimpan ke GitHub dan tidak dikirim ke server. Setelah selesai, file PDF tersimpan melalui proses download biasa di perangkat kamu.</div>
+              <div class="full info">PDF dibuat di perangkat ini.</div>
             </div>
           </div>
 
           <div class="card" style="margin-top:18px">
-            <div class="card-head"><div><div class="card-title">Dokumentasi</div><div class="card-sub">KTP, KK, Rumah, dan Selfie wajib. Sosmed & Identitas opsional.</div></div></div>
+            <div class="card-head"><div><div class="card-title">Dokumentasi</div><div class="card-sub">4 foto wajib. 2 foto opsional.</div></div></div>
 
             <div class="upload-grid">
               <div class="upload"><div class="upload-title">Foto KTP <em>*</em></div><div class="preview" id="preview-ktp">Belum ada foto</div><input id="file-ktp" type="file" accept="image/*"></div>
@@ -219,7 +416,7 @@ button{cursor:pointer}
 
             <div class="actions">
               <button type="button" class="btn ghost" id="resetFormBtn">Reset Form</button>
-              <button type="submit" class="btn primary" id="createPdfBtn">BUAT & DOWNLOAD PDF</button>
+              <button type="submit" class="btn primary" id="createPdfBtn">BUAT PDF</button>
             </div>
             <div id="formStatus" style="margin-top:10px;font-size:11px;font-weight:800"></div>
           </div>
@@ -230,7 +427,7 @@ button{cursor:pointer}
       <section id="page-history" class="page">
         <div class="page-intro">
           <h2>Riwayat PDF</h2>
-          <p>Riwayat hanya disimpan secara lokal di browser ini. File PDF tetap berada di folder download perangkat.</p>
+          <p>Daftar PDF yang dibuat.</p>
         </div>
         <div class="card">
           <div class="searchbar">
@@ -241,35 +438,7 @@ button{cursor:pointer}
           <div id="historyTable"></div>
         </div>
       </section>
-
-      <!-- GUIDE -->
-      <section id="page-guide" class="page">
-        <div class="page-intro"><h2>Panduan</h2><p>Informasi penggunaan aplikasi.</p></div>
-        <div class="grid2">
-          <div class="card">
-            <div class="card-head"><div><div class="card-title">Alur Kerja</div><div class="card-sub">Urutan proses saat membuat arsip.</div></div></div>
-            <div class="steps" style="margin-top:0">
-              <div class="step done"><span class="dot"></span>Login ke aplikasi</div>
-              <div class="step done"><span class="dot"></span>Isi biodata peminjam</div>
-              <div class="step done"><span class="dot"></span>Upload 4–6 dokumentasi</div>
-              <div class="step done"><span class="dot"></span>Klik Buat & Download PDF</div>
-              <div class="step done"><span class="dot"></span>Simpan file PDF di komputer</div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><div><div class="card-title">Privasi & Keamanan</div><div class="card-sub">Pahami batasan versi GitHub-only.</div></div></div>
-            <div class="info">
-              Aplikasi ini tidak mempunyai backend dan tidak menyimpan data di Google Drive/Spreadsheet. Karena itu foto diproses di browser. Namun login bukan keamanan server-side: username/password di file HTML secara teknis dapat dilihat melalui source code. Gunakan password khusus untuk aplikasi ini dan jangan gunakan password email/Google.
-            </div>
-            <div style="height:10px"></div>
-            <div class="info">
-              Untuk arsip jangka panjang, simpan PDF hasil download ke lokasi yang aman dan lakukan backup teratur.
-            </div>
-          </div>
-        </div>
-      </section>
-
-    </div>
+</div>
   </main>
 </div>
 
@@ -291,6 +460,15 @@ button{cursor:pointer}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- SIMPLE LOADING -->
+<div class="simple-loading" id="simpleLoading">
+  <div class="simple-loading-box">
+    <div class="simple-spinner"></div>
+    <div class="simple-loading-title" id="simpleLoadingTitle">Memproses...</div>
+    <div class="simple-loading-text" id="simpleLoadingText">Mohon tunggu.</div>
+  </div>
+</div>
 
 <script>
 /* ===============================
@@ -323,8 +501,24 @@ function setStep(n,state="active"){
   $("load"+n).className="step "+state;
 }
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
-function today(){return new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"})}
-function timeNow(){return new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"})}
+
+function simpleLoading(show,title="Memproses...",text="Mohon tunggu."){
+  const el=$("simpleLoading");
+  if(!el)return;
+  el.classList.toggle("show",show);
+  if(show){
+    $("simpleLoadingTitle").textContent=title;
+    $("simpleLoadingText").textContent=text;
+  }
+}
+
+function formatDateTime(){
+  const d=new Date();
+  const date=d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+  const time=d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  return date+" • "+time;
+}
+function timeNow(){return formatDateTime()}
 function safe(s){return String(s||"").replace(/[\\/:*?"<>|#%{}~&]/g,"-").replace(/\s+/g," ").trim().slice(0,100)}
 function digits(s){return String(s||"").replace(/\D/g,"")}
 function archiveId(){
@@ -368,8 +562,8 @@ function showPage(name){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const page=$("page-"+name);if(page)page.classList.add("active");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
-  const titles={dashboard:"Dashboard",input:"Input Peminjam",history:"Riwayat PDF",guide:"Panduan"};
-  $("pageTitle").textContent=titles[name]||"ARSIP PINJAMAN";
+  const titles={dashboard:"Dashboard",input:"Input Peminjam",history:"Riwayat PDF"};
+  $("pageTitle").textContent=titles[name]||"ASCARINDO FINANCE";
   window.scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
@@ -378,12 +572,23 @@ document.querySelectorAll("[data-page-jump]").forEach(b=>b.addEventListener("cli
 $("togglePassword").addEventListener("click",()=>{
   const p=$("password");p.type=p.type==="password"?"text":"password";$("togglePassword").textContent=p.type==="password"?"Lihat":"Sembunyikan";
 });
-function attemptLogin(){
+async function attemptLogin(){
+  if(busy)return;
   const u=$("username").value.trim(),p=$("password").value;
-  if(u===LOGIN_CONFIG.username && p===LOGIN_CONFIG.password){
-    sessionStorage.setItem("appLogin","1");
-    $("loginPage").classList.add("hidden");$("app").classList.remove("hidden");refreshStats();toast("Selamat datang di ARSIP PINJAMAN","success");
-  }else $("loginError").textContent="Username atau password salah.";
+  if(u!==LOGIN_CONFIG.username || p!==LOGIN_CONFIG.password){
+    $("loginError").textContent="Username atau password salah.";
+    return;
+  }
+  busy=true;
+  simpleLoading(true,"Masuk...","Menyiapkan aplikasi.");
+  await wait(500);
+  sessionStorage.setItem("appLogin","1");
+  $("loginPage").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  refreshStats();
+  simpleLoading(false);
+  toast("Berhasil masuk.","success");
+  busy=false;
 }
 $("loginBtn").addEventListener("click",attemptLogin);
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")attemptLogin()});
@@ -454,7 +659,7 @@ async function buildPdf(){
   const id=archiveId(), now=new Date();
   const nama=$("nama").value.trim(), nik=digits($("nik").value.trim()), marketing=$("marketing").value.trim();
   const doc=new jsPDF({unit:"mm",format:"a4",compress:true});
-  header(doc,"ARSIP PINJAMAN");
+  header(doc,"ASCARINDO FINANCE");
   let y=33;
   y=addField(doc,"ID Arsip",id,y);y=addField(doc,"Tanggal",now.toLocaleString("id-ID"),y);
   y=addField(doc,"Marketing",marketing,y);y=addField(doc,"Nama Lengkap",nama,y);
@@ -492,20 +697,21 @@ $("borrowerForm").addEventListener("submit",async e=>{
   if(err){$("formStatus").textContent=err;$("formStatus").style.color="var(--danger)";toast(err,"error");return}
 
   busy=true;$("createPdfBtn").disabled=true;$("resetFormBtn").disabled=true;
+  simpleLoading(true,"Membuat PDF...","Memproses data dan foto.");
   try{
     showLoading(true,"Memvalidasi data...","Memeriksa kolom wajib.",12);setStep(1);await wait(250);
     showLoading(true,"Memproses foto...","Mengompres foto agar PDF stabil.",36);setStep(2);await wait(250);
     showLoading(true,"Menyusun PDF...","Menggabungkan biodata dan dokumentasi.",68);setStep(3);
     const result=await buildPdf();
     showLoading(true,"Menyiapkan download...","PDF selesai, menyiapkan file.",94);setStep(4);await wait(350);
-    const filename="ARSIP PINJAMAN - "+safe(result.nama)+" - "+result.nik+".pdf";
-    result.doc.save(filename);setStep(4,"done");showLoading(false);
+    const filename="ASCARINDO FINANCE - "+safe(result.nama)+" - "+result.nik+".pdf";
+    result.doc.save(filename);setStep(4,"done");showLoading(false); simpleLoading(false);
     const h=getHistory();h.unshift({id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename});setHistory(h);
     refreshStats();
     $("formStatus").textContent="Berhasil. PDF sudah dibuat: "+filename;$("formStatus").style.color="var(--success)";
     toast("PDF berhasil dibuat dan didownload.","success");
   }catch(ex){
-    showLoading(false);const msg=ex?.message||"Gagal membuat PDF.";
+    showLoading(false);simpleLoading(false);const msg=ex?.message||"Gagal membuat PDF.";
     $("formStatus").textContent=msg;$("formStatus").style.color="var(--danger)";toast(msg,"error");
   }finally{busy=false;$("createPdfBtn").disabled=false;$("resetFormBtn").disabled=false}
 });
@@ -516,7 +722,10 @@ $("clearHistory").addEventListener("click",()=>{
   if(confirm("Hapus seluruh riwayat lokal? File PDF yang sudah didownload tidak ikut terhapus.")){localStorage.removeItem("arsipHistory");refreshStats();toast("Riwayat lokal dihapus.","success")}
 });
 
-$("topDate").textContent=today();
+$("topDate").textContent=formatDateTime();
+  $("sidebarDate").textContent=formatDateTime();
+  setInterval(()=>{ $("topDate").textContent=formatDateTime(); $("sidebarDate").textContent=formatDateTime(); },1000);
+  simpleLoading(false);
 $("sidebarDate").textContent=timeNow();
 refreshStats();
 </script>
