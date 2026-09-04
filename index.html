@@ -894,7 +894,7 @@ function pdfWatermark(doc){
   doc.restoreGraphicsState();
 }
 
-function buildPdf(){
+async function buildPdf(){
   const {jsPDF}=window.jspdf||{};if(!jsPDF)throw new Error("Library PDF belum termuat. Periksa koneksi internet lalu refresh halaman.");
   const id=archiveId(), now=new Date();
   const nama=$("nama").value.trim(), nik=digits($("nik").value.trim()), marketing=$("marketing").value.trim();
