@@ -140,6 +140,9 @@ button{cursor:pointer}
 .logout{margin-top:12px;width:100%;border:1px solid var(--line);background:transparent;color:var(--danger);padding:9px 10px;border-radius:var(--radius-sm);font-size:12px;font-weight:700}
 .logout:hover{background:var(--danger-bg)}
 
+/* Bottom tab bar: mobile-only navigation, disembunyikan di desktop/laptop */
+.bottom-nav{display:none}
+
 .main{grid-column:2;min-width:0}
 .topbar{
   height:70px;background:rgba(10,13,19,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
@@ -270,14 +273,26 @@ tbody tr:hover td{background:var(--surface-2)}
   .app-shell{display:block}
   .sidebar{position:static;width:100%;height:auto;padding:12px;display:block}
   .side-brand{padding:8px 10px 12px;margin-bottom:8px}
-  .nav{display:grid;grid-template-columns:repeat(3,1fr)}
+  .sidebar .nav{display:none}
   .nav button{text-align:center;font-size:10.5px;padding:10px 6px}
-  .nav button.active::before{left:8px;right:8px;top:auto;bottom:2px;width:auto;height:2px}
   .side-bottom{display:none}
   .topbar{position:static;padding:0 16px}
-  .content{padding:16px}
+  .content{padding:16px 16px calc(82px + env(safe-area-inset-bottom))}
   .login-card{grid-template-columns:1fr}
   .login-hero{border-right:0;border-bottom:1px solid var(--line)}
+
+  /* Bottom tab bar aktif hanya di tampilan HP */
+  .bottom-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;gap:4px;
+    background:rgba(10,13,19,.96);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+  }
+  .bottom-nav button{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    padding:8px 2px;border-radius:12px;font-size:10px;text-align:center;
+  }
+  .bottom-nav button.active::before{content:none}
 }
 @media(max-width:600px){
   .cards{grid-template-columns:1fr 1fr}
@@ -294,13 +309,14 @@ tbody tr:hover td{background:var(--surface-2)}
   .page-title{font-size:16.5px}
   .date-chip{min-width:0;width:100%}
   .top-actions{flex:1}
-  .content{padding:12px}
+  .content{padding:12px 12px calc(78px + env(safe-area-inset-bottom))}
   .card{padding:15px}
   .login-page{padding:10px}
   .login-card{border-radius:20px}
   .login-form{padding:30px 22px 34px}
   .login-hero{padding:30px 22px}
   .login-form h2{font-size:27px}
+  .bottom-nav button{font-size:9px}
 }
 </style>
 </head>
@@ -480,6 +496,14 @@ tbody tr:hover td{background:var(--surface-2)}
       </section>
     </div>
   </main>
+
+  <!-- BOTTOM TAB BAR: hanya tampil di layar HP (lihat @media max-width:800px) -->
+  <nav class="nav bottom-nav" id="bottomNav">
+    <button class="active" data-page="dashboard">Dashboard</button>
+    <button data-page="input">Input</button>
+    <button data-page="history">Riwayat</button>
+    <button data-page="marketing">Marketing</button>
+  </nav>
 </div>
 
 <!-- LOADING -->
