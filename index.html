@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ASCARINDO FINANCE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
 <style>
@@ -70,8 +70,21 @@ button{cursor:pointer}
 .toast{position:fixed;right:22px;bottom:22px;min-width:280px;max-width:430px;display:none;z-index:10000;padding:13px 15px;border-radius:11px;background:#172033;color:#fff;font-size:12px;box-shadow:0 12px 30px rgba(0,0,0,.2)}.toast.show{display:block}.toast.success{background:var(--success)}.toast.error{background:var(--danger)}
 
 @media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.upload-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:800px){.app-shell{display:block}.sidebar{position:static;width:100%;height:auto;padding:12px;display:block}.side-brand{padding:8px 10px 12px;margin-bottom:8px}.nav{display:grid;grid-template-columns:repeat(4,1fr)}.nav button{text-align:center;font-size:10px;padding:9px 6px}.side-bottom{display:none}.topbar{position:static;padding:0 16px}.content{padding:17px}.login-card{grid-template-columns:1fr}.login-hero{display:none}}
+@media(max-width:800px){.app-shell{display:block}.sidebar{position:static;width:100%;height:auto;padding:12px;display:block}.side-brand{padding:8px 10px 12px;margin-bottom:8px}.nav{display:grid;grid-template-columns:repeat(3,1fr)}.nav button{text-align:center;font-size:10px;padding:9px 6px}.side-bottom{display:none}.topbar{position:static;padding:0 16px}.content{padding:17px}.login-card{grid-template-columns:1fr}.login-hero{display:none}}
 @media(max-width:600px){.cards{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.upload-grid{grid-template-columns:1fr}.searchbar{flex-direction:column}.searchbar select{width:100%}.cards .stat-value{font-size:22px}}
+@media(max-width:420px){
+  .cards{grid-template-columns:1fr}
+  .topbar{height:auto;min-height:64px;padding:12px 14px;gap:10px}
+  .page-title{font-size:17px}
+  .date-chip{min-width:0;width:100%;font-size:10px}
+  .top-actions{flex:1}
+  .content{padding:12px}
+  .card{padding:15px}
+  .login-page{padding:10px!important}
+  #loginPage .login-card{max-width:100%;border-radius:20px}
+  #loginPage .login-form{padding:26px 20px 30px!important}
+  #loginPage .login-hero{padding:24px 20px!important}
+}
 
 /* SIMPLE LOADING */
 .simple-loading{position:fixed;inset:0;background:rgba(10,20,32,.52);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:20000}
@@ -525,6 +538,521 @@ button{cursor:pointer}
 }
 </style>
 
+
+
+
+
+<style id="ascarindo-obsidian-aurora-theme">
+/* =========================================================
+   ASCARINDO FINANCE — OBSIDIAN AURORA
+   Dark premium UI / glass / cyan-indigo accent
+   ========================================================= */
+:root{
+  --bg:#070a12;
+  --bg2:#0b1020;
+  --card:#0e1422;
+  --card2:#11192a;
+  --navy:#090e19;
+  --navy2:#111a31;
+  --blue:#6d8cff;
+  --blue2:#8ca7ff;
+  --cyan:#54d6e8;
+  --violet:#9b87ff;
+  --text:#f1f5ff;
+  --muted:#8490a7;
+  --line:#202a3d;
+  --line2:#293650;
+  --soft:#121a29;
+  --success:#48d7a4;
+  --danger:#ff7184;
+  --warning:#f4bd68;
+  --shadow:0 18px 55px rgba(0,0,0,.28);
+}
+
+html,body{
+  background:
+    radial-gradient(circle at 8% 4%,rgba(109,140,255,.07),transparent 28%),
+    radial-gradient(circle at 92% 94%,rgba(84,214,232,.045),transparent 25%),
+    var(--bg)!important;
+  color:var(--text)!important;
+}
+body{color-scheme:dark}
+
+/* ---------- LOGIN ---------- */
+#loginPage{
+  background:
+    radial-gradient(circle at 18% 20%,rgba(109,140,255,.16),transparent 30%),
+    radial-gradient(circle at 85% 80%,rgba(155,135,255,.12),transparent 30%),
+    linear-gradient(135deg,#05070d,#0b1020)!important;
+}
+
+#loginPage .login-card{
+  width:min(920px,calc(100vw - 40px))!important;
+  height:570px!important;
+  min-height:570px!important;
+  background:rgba(13,19,31,.92)!important;
+  border:1px solid rgba(140,167,255,.13)!important;
+  border-radius:30px!important;
+  box-shadow:0 40px 120px rgba(0,0,0,.55)!important;
+  backdrop-filter:blur(18px);
+}
+
+#loginPage .login-hero{
+  padding:58px!important;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 80% 18%,rgba(84,214,232,.13),transparent 28%),
+    radial-gradient(circle at 20% 80%,rgba(155,135,255,.10),transparent 30%),
+    linear-gradient(145deg,#0b1324,#0d1729)!important;
+}
+
+#loginPage .login-hero:before{
+  content:"";
+  position:absolute;
+  width:240px;height:240px;
+  right:-90px;bottom:-100px;
+  border-radius:50%;
+  border:1px solid rgba(140,167,255,.12);
+  box-shadow:0 0 0 28px rgba(140,167,255,.018),0 0 0 58px rgba(140,167,255,.012);
+}
+
+#loginPage .login-hero .logo-mark{
+  background:linear-gradient(145deg,#283b70,#182441)!important;
+  border:1px solid rgba(140,167,255,.2)!important;
+  box-shadow:0 14px 35px rgba(0,0,0,.25);
+}
+
+#loginPage .login-hero .logo-title{
+  color:#f4f7ff!important;
+  letter-spacing:.7px!important;
+}
+
+#loginPage .login-hero .logo-sub{
+  color:#8290a9!important;
+}
+
+#loginPage .login-hero:after{
+  content:"DATA  •  DOKUMENTASI  •  ARSIP";
+  position:absolute;
+  left:58px;
+  bottom:54px;
+  margin:0;
+  color:#66748d!important;
+  font-size:10px!important;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+#loginPage .login-form{
+  padding:58px!important;
+  background:rgba(15,22,35,.96)!important;
+  border-left:1px solid rgba(140,167,255,.08);
+}
+
+#loginPage .login-form .eyebrow{
+  color:#7e9aff!important;
+}
+
+#loginPage .login-form h2{
+  color:#f2f6ff!important;
+  font-size:38px!important;
+}
+
+#loginPage .login-form .field label{color:#dce5f3!important}
+
+#loginPage .login-form .input-wrap input{
+  background:#090e18!important;
+  border-color:#263248!important;
+  color:#eef3ff!important;
+}
+
+#loginPage .login-form .input-wrap input:focus{
+  border-color:#6d8cff!important;
+  box-shadow:0 0 0 4px rgba(109,140,255,.10)!important;
+}
+
+#loginPage #togglePassword{color:#7d8ba3!important}
+
+#loginPage .login-btn{
+  background:linear-gradient(135deg,#5d72ef,#718fff)!important;
+  box-shadow:0 15px 34px rgba(91,115,238,.22)!important;
+}
+
+/* ---------- APP ---------- */
+.app-shell{background:var(--bg)!important}
+
+.sidebar{
+  background:
+    radial-gradient(circle at 20% 0%,rgba(109,140,255,.08),transparent 26%),
+    linear-gradient(180deg,#090e18,#080c14)!important;
+  border-right:1px solid #1c2637;
+  box-shadow:10px 0 40px rgba(0,0,0,.16);
+}
+
+.side-brand{
+  padding-bottom:22px!important;
+  border-bottom-color:#1d2738!important;
+}
+
+.side-brand .title{color:#f0f4fd!important}
+.side-brand .sub{color:#6f7d95!important}
+
+.nav{gap:7px!important}
+
+.nav button{
+  color:#7f8da5!important;
+  border:1px solid transparent!important;
+  position:relative;
+  transition:.2s ease!important;
+}
+
+.nav button:hover{
+  color:#dce5f4!important;
+  background:#111a2a!important;
+}
+
+.nav button.active{
+  color:#eef3ff!important;
+  background:linear-gradient(100deg,rgba(109,140,255,.16),rgba(109,140,255,.045))!important;
+  border-color:rgba(109,140,255,.10)!important;
+  box-shadow:inset 3px 0 #718fff,0 8px 24px rgba(0,0,0,.12);
+}
+
+.side-bottom{
+  border-top-color:#1d2738!important;
+}
+
+/* ---------- TOPBAR ---------- */
+.topbar{
+  background:rgba(8,12,20,.90)!important;
+  border-bottom:1px solid #1d2738!important;
+  backdrop-filter:blur(16px);
+}
+
+.page-title{
+  color:#edf3ff!important;
+  letter-spacing:.1px;
+}
+
+.date-chip{
+  background:#101827!important;
+  color:#8592a8!important;
+  border-color:#263247!important;
+}
+
+/* ---------- PAGE ---------- */
+.content{max-width:1540px!important}
+
+.page-intro{
+  margin-bottom:24px!important;
+}
+
+.page-intro h2{
+  color:#f0f4fc!important;
+  font-size:25px!important;
+}
+
+.page-intro p{
+  color:#737f95!important;
+}
+
+/* ---------- STAT CARDS ---------- */
+.cards{
+  gap:15px!important;
+}
+
+.stat{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.025),transparent 45%),
+    #0f1623!important;
+  border:1px solid #202b3e!important;
+  border-radius:18px!important;
+  box-shadow:var(--shadow)!important;
+  padding:20px!important;
+}
+
+.stat:before{
+  content:"";
+  position:absolute;
+  left:0;top:0;
+  width:100%;
+  height:2px;
+  background:linear-gradient(90deg,rgba(109,140,255,.65),rgba(84,214,232,.28),transparent);
+}
+
+.stat:after{
+  background:rgba(109,140,255,.045)!important;
+}
+
+.stat:hover{
+  transform:translateY(-3px);
+  border-color:#30405b!important;
+  box-shadow:0 22px 60px rgba(0,0,0,.34)!important;
+}
+
+.stat-label{
+  color:#7e8ca4!important;
+  letter-spacing:.04em;
+}
+
+.stat-value{
+  color:#f2f6ff!important;
+  font-size:29px!important;
+}
+
+.stat-hint{color:#66748c!important}
+
+/* ---------- CARDS ---------- */
+.card{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.018),transparent 40%),
+    #0f1623!important;
+  border-color:#202b3e!important;
+  border-radius:18px!important;
+  box-shadow:var(--shadow)!important;
+}
+
+.card-title{color:#e9eff9!important}
+.card-sub{color:#748199!important}
+
+/* ---------- QUICK / ACTION ---------- */
+.quick button{
+  background:#101826!important;
+  border-color:#222e42!important;
+  color:#e5ebf5!important;
+}
+
+.quick button:hover{
+  background:#141e30!important;
+  border-color:#34435d!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.2)!important;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  transition:.18s ease!important;
+}
+
+.btn.primary{
+  background:linear-gradient(135deg,#243d82,#4d68c9)!important;
+  color:#fff!important;
+}
+
+.btn.primary:hover{
+  filter:brightness(1.1);
+  transform:translateY(-1px);
+}
+
+.btn.ghost{
+  background:#151e2c!important;
+  color:#aebbd0!important;
+  border:1px solid #29364a!important;
+}
+
+.btn.ghost:hover{
+  background:#1a2536!important;
+  color:#edf3ff!important;
+  border-color:#3a4b67!important;
+}
+
+.btn.success{
+  background:#167b60!important;
+}
+
+/* ---------- FORMS ---------- */
+.field2 label{
+  color:#dbe4f0!important;
+}
+
+.field2 input,
+.field2 textarea,
+.field2 select,
+.searchbar input,
+.searchbar select{
+  background:#0a1019!important;
+  color:#e9eff8!important;
+  border-color:#273347!important;
+  border-radius:11px!important;
+}
+
+.field2 input::placeholder,
+.field2 textarea::placeholder,
+.searchbar input::placeholder{
+  color:#5d6a80!important;
+}
+
+.field2 input:focus,
+.field2 textarea:focus,
+.field2 select:focus,
+.searchbar input:focus,
+.searchbar select:focus{
+  border-color:#6689ff!important;
+  box-shadow:0 0 0 3px rgba(102,137,255,.10)!important;
+}
+
+/* ---------- UPLOAD ---------- */
+.upload{
+  background:#0b121d!important;
+  border-color:#222e40!important;
+  border-radius:15px!important;
+}
+
+.upload-title{color:#dce5f1!important}
+
+.preview{
+  background:
+    linear-gradient(135deg,rgba(109,140,255,.025),transparent),
+    #111a28!important;
+  border-color:#2b394e!important;
+  border-radius:11px!important;
+}
+
+/* ---------- INFO ---------- */
+.info{
+  background:#0d151f!important;
+  border-color:#29374b!important;
+  color:#7f8da2!important;
+}
+
+/* ---------- TABLE / HISTORY ---------- */
+.table-wrap{
+  border:1px solid #202b3d;
+  border-radius:12px;
+}
+
+table{
+  background:#0f1623!important;
+}
+
+th{
+  background:#0b111b!important;
+  color:#77859b!important;
+  border-bottom-color:#202b3d!important;
+}
+
+td{
+  color:#cbd5e3!important;
+  border-bottom-color:#1e2938!important;
+}
+
+td small{color:#6f7d94!important}
+
+.badge{
+  background:rgba(72,215,164,.10)!important;
+  color:#52dfad!important;
+}
+
+.badge.warn{
+  background:rgba(244,189,104,.10)!important;
+  color:#f5c16e!important;
+}
+
+.badge.err{
+  background:rgba(255,113,132,.10)!important;
+  color:#ff7b8d!important;
+}
+
+/* ---------- SEARCH ---------- */
+.searchbar{
+  padding-bottom:2px;
+}
+
+/* ---------- LOADING ---------- */
+.overlay,
+.simple-loading{
+  background:rgba(3,6,12,.76)!important;
+  backdrop-filter:blur(9px);
+}
+
+.loader,
+.simple-loading-box{
+  background:#111926!important;
+  border:1px solid #2a374b!important;
+  box-shadow:0 35px 100px rgba(0,0,0,.55)!important;
+}
+
+.loader-title,
+.simple-loading-title{color:#eef4ff!important}
+
+.loader-desc,
+.simple-loading-text{color:#7e8ca3!important}
+
+.spinner,
+.simple-spinner{
+  border-color:#283548!important;
+  border-top-color:#7696ff!important;
+}
+
+.bar{background:#202b3d!important}
+
+.bar i{
+  background:linear-gradient(90deg,#586ff1,#6ed5e7)!important;
+}
+
+/* ---------- TOAST ---------- */
+.toast{
+  background:#151e2d!important;
+  border:1px solid #2c394d!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.42)!important;
+}
+
+.toast.success{
+  background:#103a30!important;
+  border-color:#1c6b57!important;
+}
+
+.toast.error{
+  background:#421d28!important;
+  border-color:#70303d!important;
+}
+
+/* ---------- MOBILE ---------- */
+@media(max-width:800px){
+  .sidebar{
+    background:#090e18!important;
+  }
+
+  .nav{
+    gap:5px!important;
+  }
+
+  .nav button.active{
+    box-shadow:inset 0 -2px #718fff!important;
+  }
+}
+
+@media(max-width:700px){
+  #loginPage .login-card{
+    width:min(440px,100%)!important;
+    height:auto!important;
+    min-height:0!important;
+    grid-template-columns:1fr!important;
+  }
+
+  #loginPage .login-hero{
+    min-height:145px!important;
+    padding:28px!important;
+  }
+
+  #loginPage .login-hero:after{
+    display:none!important;
+  }
+
+  #loginPage .login-form{
+    padding:32px 28px 36px!important;
+    border-left:0!important;
+    border-top:1px solid rgba(140,167,255,.08);
+  }
+}
+
+@media(max-width:420px){
+  .cards{grid-template-columns:1fr!important}
+  .content{padding:12px!important}
+  .card{padding:15px!important}
+  .stat-value{font-size:25px!important}
+}
+</style>
 </head>
 <body>
 
@@ -560,7 +1088,7 @@ button{cursor:pointer}
         </div>
       </div>
 
-      <button class="login-btn" id="loginBtn">MASUK</button>
+      <button class="login-btn" id="loginBtn" type="button">MASUK</button>
       <div class="login-error" id="loginError"></div>
     </section>
   </div>
@@ -757,6 +1285,10 @@ function formatDateTime(){
   return date+" • "+time;
 }
 function timeNow(){return formatDateTime()}
+function localDateKey(d=new Date()){
+  const p=n=>String(n).padStart(2,"0");
+  return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());
+}
 function safe(s){return String(s||"").replace(/[\\/:*?"<>|#%{}~&]/g,"-").replace(/\s+/g," ").trim().slice(0,100)}
 function digits(s){return String(s||"").replace(/\D/g,"")}
 function archiveId(){
@@ -766,14 +1298,22 @@ function archiveId(){
   for(let i=0;i<6;i++) r+=chars[Math.floor(Math.random()*chars.length)];
   return "ARS-"+date+"-"+r;
 }
-function getHistory(){try{return JSON.parse(localStorage.getItem("arsipHistory")||"[]")}catch{return[]}}
-function setHistory(v){localStorage.setItem("arsipHistory",JSON.stringify(v.slice(0,100)))}
+function getHistory(){
+  try{
+    const value=JSON.parse(localStorage.getItem("arsipHistory")||"[]");
+    return Array.isArray(value)?value:[];
+  }catch{return[]}
+}
+function setHistory(v){
+  try{localStorage.setItem("arsipHistory",JSON.stringify(v.slice(0,100)))}
+  catch{toast("Riwayat tidak dapat disimpan di browser ini.","error")}
+}
 function refreshStats(){
   const h=getHistory(), uniq=new Set(h.map(x=>x.nik||x.nama)).size;
   $("statPdf").textContent=h.length;
   $("statBorrower").textContent=uniq;
   $("statPhotos").textContent=h.reduce((a,x)=>a+(x.photos||0),0);
-  const ds=new Date().toISOString().slice(0,10);
+  const ds=localDateKey(new Date());
   $("statToday").textContent=h.filter(x=>x.dateKey===ds).length;
   renderDashboardHistory(h.slice(0,7));
   renderHistory();
@@ -812,28 +1352,70 @@ $("togglePassword").addEventListener("click",()=>{
 });
 async function attemptLogin(){
   if(busy)return;
-  const u=$("username").value.trim(),p=$("password").value;
+  const u=$("username").value.trim();
+  const p=$("password").value;
+  $("loginError").textContent="";
+
   if(u!==LOGIN_CONFIG.username || p!==LOGIN_CONFIG.password){
     $("loginError").textContent="Username atau password salah.";
     return;
   }
+
   busy=true;
+  $("loginBtn").disabled=true;
+  $("loginBtn").textContent="MEMPROSES...";
   simpleLoading(true,"Masuk...","Menyiapkan aplikasi.");
-  await wait(500);
-  sessionStorage.setItem("appLogin","1");
-  $("loginPage").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  refreshStats();
-  simpleLoading(false);
-  toast("Berhasil masuk.","success");
-  busy=false;
+
+  try{
+    await wait(700);
+    try{sessionStorage.setItem("appLogin","1");}catch(e){}
+
+    // Gunakan style langsung agar tidak terganggu aturan CSS .hidden di GitHub Pages.
+    $("loginPage").style.display="none";
+    $("app").classList.remove("hidden");
+    $("app").style.display="grid";
+    refreshStats();
+    toast("Berhasil masuk.","success");
+  }catch(ex){
+    $("loginError").textContent="Gagal membuka aplikasi. Silakan refresh halaman.";
+  }finally{
+    simpleLoading(false);
+    $("loginBtn").disabled=false;
+    $("loginBtn").textContent="MASUK";
+    busy=false;
+  }
 }
+
 $("loginBtn").addEventListener("click",attemptLogin);
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")attemptLogin()});
+
 $("logoutBtn").addEventListener("click",()=>{
-  sessionStorage.removeItem("appLogin");$("app").classList.add("hidden");$("loginPage").classList.remove("hidden");$("username").focus();
+  try{sessionStorage.removeItem("appLogin");}catch(e){}
+  $("app").classList.add("hidden");
+  $("app").style.display="none";
+  $("loginPage").classList.remove("hidden");
+  $("loginPage").style.display="flex";
+  $("password").value="";
+  $("loginError").textContent="";
+  $("username").focus();
 });
-if(sessionStorage.getItem("appLogin")==="1"){$("loginPage").classList.add("hidden");$("app").classList.remove("hidden")}
+
+// Inisialisasi tampilan saat GitHub Pages pertama kali membuka index.html.
+(function initAuth(){
+  let loggedIn=false;
+  try{loggedIn=sessionStorage.getItem("appLogin")==="1";}catch(e){}
+  if(loggedIn){
+    $("loginPage").classList.add("hidden");
+    $("loginPage").style.display="none";
+    $("app").classList.remove("hidden");
+    $("app").style.display="grid";
+  }else{
+    $("loginPage").classList.remove("hidden");
+    $("loginPage").style.display="flex";
+    $("app").classList.add("hidden");
+    $("app").style.display="none";
+  }
+})();
 
 $("nik").addEventListener("input",e=>e.target.value=digits(e.target.value).slice(0,16));
 
@@ -843,18 +1425,33 @@ for(const key of PHOTO_KEYS){
     const box=$("preview-"+key);
     if(!f){box.textContent=(key==="sosmed"||key==="identitas")?"Opsional":"Belum ada foto";return}
     if(f.size>10*1024*1024){toast("Foto "+key.toUpperCase()+" lebih dari 10 MB.","error");e.target.value="";delete photoState[key];box.textContent="Belum ada foto";return}
-    const url=URL.createObjectURL(f);box.innerHTML='<img alt="Preview">';box.querySelector("img").src=url;
+    if (photoState[key]?._previewUrl) URL.revokeObjectURL(photoState[key]._previewUrl);
+const url=URL.createObjectURL(f);
+f._previewUrl=url;
+box.innerHTML='<img alt="Preview">';
+box.querySelector("img").src=url;
   });
 }
 
 function resetForm(){
   $("borrowerForm").reset();
-  for(const k of Object.keys(photoState)) delete photoState[k];
+  for(const k of Object.keys(photoState)){
+    if(photoState[k]?._previewUrl) URL.revokeObjectURL(photoState[k]._previewUrl);
+    delete photoState[k];
+  }
   for(const k of PHOTO_KEYS) $("preview-"+k).innerHTML=(k==="sosmed"||k==="identitas")?"Opsional":"Belum ada foto";
   $("formStatus").textContent="";
 }
 $("resetFormBtn").addEventListener("click",()=>{if(!busy && confirm("Reset semua data dan foto di form?"))resetForm()});
-$("quickReset").addEventListener("click",()=>{if(!busy && confirm("Reset semua data dan foto di form?")){resetForm();showPage("input")}});
+const quickReset = $("quickReset");
+if (quickReset) {
+  quickReset.addEventListener("click", () => {
+    if (!busy && confirm("Reset semua data dan foto di form?")) {
+      resetForm();
+      showPage("input");
+    }
+  });
+}
 
 async function imageData(file,maxSide=1800,quality=.84){
   return new Promise((resolve,reject)=>{
@@ -880,12 +1477,17 @@ function addField(doc,label,value,y){
   return y+Math.max(6,lines.length*4.7);
 }
 async function fitImage(doc,dataUrl){
-  return new Promise(resolve=>{
-    const img=new Image();img.onload=()=>{
-      const margin=12,maxW=210-margin*2,maxH=297-53,ratio=Math.min(maxW/img.width,maxH/img.height);
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onerror=()=>reject(new Error("Gagal memuat foto untuk PDF."));
+    img.onload=()=>{
+      const margin=12,maxW=210-margin*2,maxH=297-53;
+      const ratio=Math.min(maxW/img.width,maxH/img.height);
       const w=img.width*ratio,h=img.height*ratio,x=(210-w)/2,y=34+(maxH-h)/2;
-      doc.addImage(dataUrl,"JPEG",x,y,w,h,undefined,"FAST");resolve();
-    };img.src=dataUrl;
+      doc.addImage(dataUrl,"JPEG",x,y,w,h,undefined,"FAST");
+      resolve();
+    };
+    img.src=dataUrl;
   });
 }
 function header(doc,title){
@@ -904,7 +1506,7 @@ async function buildPdf(){
   y=addField(doc,"NIK",nik,y);y=addField(doc,"No. HP",$("noHp").value.trim(),y);
   y=addField(doc,"No. HP Pasangan",$("noHpPasangan").value.trim(),y);
   y=addField(doc,"No. HP Keluarga",$("noHpKeluarga").value.trim(),y);
-  y=addField(doc,"Google Maps",$("maps").value.trim(),y);
+  y=addField(doc,"Google Maps",$("maps").value.trim()||"-",y);
   doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.text("Alamat",16,y);
   doc.setFont("helvetica","normal");const al=doc.splitTextToSize($("alamat").value.trim(),178);doc.text(al,16,y+5);
   y+=Math.max(18,al.length*4.7+10);
@@ -919,7 +1521,7 @@ async function buildPdf(){
     doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(100,110,125);
     doc.text(nama+" • "+id,12,287);doc.setTextColor(23,32,51);
   }
-  return {doc,id,nama,nik,marketing,photos,time:now.toLocaleString("id-ID"),dateKey:now.toISOString().slice(0,10)};
+  return {doc,id,nama,nik,marketing,photos,time:now.toLocaleString("id-ID"),dateKey:localDateKey(now)};
 }
 
 $("borrowerForm").addEventListener("submit",async e=>{
@@ -935,7 +1537,6 @@ $("borrowerForm").addEventListener("submit",async e=>{
   if(err){$("formStatus").textContent=err;$("formStatus").style.color="var(--danger)";toast(err,"error");return}
 
   busy=true;$("createPdfBtn").disabled=true;$("resetFormBtn").disabled=true;
-  simpleLoading(true,"Membuat PDF...","Memproses data dan foto.");
   try{
     showLoading(true,"Memvalidasi data...","Memeriksa kolom wajib.",12);setStep(1);await wait(250);
     showLoading(true,"Memproses foto...","Mengompres foto agar PDF stabil.",36);setStep(2);await wait(250);
@@ -943,13 +1544,13 @@ $("borrowerForm").addEventListener("submit",async e=>{
     const result=await buildPdf();
     showLoading(true,"Menyiapkan download...","PDF selesai, menyiapkan file.",94);setStep(4);await wait(350);
     const filename="ASCARINDO FINANCE - "+safe(result.nama)+" - "+result.nik+".pdf";
-    result.doc.save(filename);setStep(4,"done");showLoading(false); simpleLoading(false);
+    result.doc.save(filename);setStep(4,"done");showLoading(false);
     const h=getHistory();h.unshift({id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename});setHistory(h);
     refreshStats();
     $("formStatus").textContent="Berhasil. PDF sudah dibuat: "+filename;$("formStatus").style.color="var(--success)";
     toast("PDF berhasil dibuat dan didownload.","success");
   }catch(ex){
-    showLoading(false);simpleLoading(false);const msg=ex?.message||"Gagal membuat PDF.";
+    showLoading(false);const msg=ex?.message||"Gagal membuat PDF.";
     $("formStatus").textContent=msg;$("formStatus").style.color="var(--danger)";toast(msg,"error");
   }finally{busy=false;$("createPdfBtn").disabled=false;$("resetFormBtn").disabled=false}
 });
