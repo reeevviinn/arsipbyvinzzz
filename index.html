@@ -356,6 +356,7 @@ tbody tr:hover td{background:var(--surface-2)}
       <button class="active" data-page="dashboard">Dashboard</button>
       <button data-page="input">Input peminjam</button>
       <button data-page="history">Riwayat PDF</button>
+      <button data-page="marketing">Marketing</button>
     </nav>
 
     <div class="side-bottom">
@@ -406,7 +407,7 @@ tbody tr:hover td{background:var(--surface-2)}
               <div class="card-title">Data peminjam</div>
             </div>
             <div class="form-grid">
-              <div class="field2"><label>Marketing <span class="req">*</span></label><input id="marketing" required placeholder="Nama marketing"></div>
+              <div class="field2"><label>Marketing <span class="req">*</span></label><select id="marketing" required><option value="" disabled selected>Pilih marketing</option></select></div>
               <div class="field2"><label>Nama lengkap <span class="req">*</span></label><input id="nama" required placeholder="Nama lengkap peminjam"></div>
               <div class="field2"><label>NIK <span class="req">*</span></label><input id="nik" maxlength="16" inputmode="numeric" required placeholder="16 digit NIK"></div>
               <div class="field2"><label>No. HP <span class="req">*</span></label><input id="noHp" inputmode="tel" required placeholder="08xxxxxxxxxx"></div>
@@ -452,6 +453,29 @@ tbody tr:hover td{background:var(--surface-2)}
             <button class="btn ghost" id="clearHistory">Hapus riwayat</button>
           </div>
           <div id="historyTable"></div>
+        </div>
+      </section>
+
+      <!-- MARKETING -->
+      <section id="page-marketing" class="page">
+        <div class="page-intro">
+          <h2>Marketing</h2>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Tambah marketing</div>
+          </div>
+          <form id="marketingForm" style="display:flex;gap:9px">
+            <input id="marketingNameInput" placeholder="Nama marketing" style="flex:1;border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 13px;outline:none;background:var(--surface);color:var(--text)">
+            <button type="submit" class="btn primary">Tambah</button>
+          </form>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="card-head">
+            <div class="card-title">Daftar marketing</div>
+          </div>
+          <div id="marketingListBox"></div>
         </div>
       </section>
     </div>
@@ -506,6 +530,72 @@ const photoState = {};
 let busy = false;
 
 const $ = id => document.getElementById(id);
+
+/* Daftar nama marketing default — dipakai hanya jika belum ada data tersimpan. */
+const DEFAULT_MARKETING_LIST = ["Marketing 1","Marketing 2","Marketing 3","Marketing 4"];
+
+function getMarketingList(){
+  try{
+    const raw=localStorage.getItem("marketingList");
+    if(raw===null){setMarketingList(DEFAULT_MARKETING_LIST);return DEFAULT_MARKETING_LIST.slice()}
+    const value=JSON.parse(raw);
+    return Array.isArray(value)?value:DEFAULT_MARKETING_LIST.slice();
+  }catch{return DEFAULT_MARKETING_LIST.slice()}
+}
+function setMarketingList(list){
+  try{localStorage.setItem("marketingList",JSON.stringify(list))}
+  catch{toast("Daftar marketing tidak dapat disimpan di peramban ini.","error")}
+}
+function populateMarketingSelect(){
+  const sel=$("marketing");
+  const current=sel.value;
+  sel.innerHTML='<option value="" disabled selected>Pilih marketing</option>';
+  for(const name of getMarketingList()){
+    const opt=document.createElement("option");
+    opt.value=name;opt.textContent=name;
+    sel.appendChild(opt);
+  }
+  if(current && getMarketingList().includes(current)) sel.value=current;
+}
+function renderMarketingList(){
+  const el=$("marketingListBox"), list=getMarketingList();
+  if(!list.length){el.innerHTML='<div class="history-empty">Belum ada nama marketing. Tambahkan lewat form di atas.</div>';return}
+  let out='<div class="table-wrap"><table><thead><tr><th>Nama</th><th></th></tr></thead><tbody>';
+  list.forEach((name,i)=>{
+    out+=`<tr><td><b>${escapeHtml(name)}</b></td><td style="text-align:right"><button type="button" class="btn ghost" data-remove-marketing="${i}" style="padding:7px 11px">Hapus</button></td></tr>`;
+  });
+  out+='</tbody></table></div>';
+  el.innerHTML=out;
+  el.querySelectorAll("[data-remove-marketing]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const idx=Number(btn.dataset.removeMarketing);
+      const list=getMarketingList();
+      const removed=list[idx];
+      if(!confirm('Hapus "'+removed+'" dari daftar marketing?'))return;
+      list.splice(idx,1);
+      setMarketingList(list);
+      renderMarketingList();
+      populateMarketingSelect();
+      toast('Marketing "'+removed+'" dihapus.',"success");
+    });
+  });
+}
+$("marketingForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const input=$("marketingNameInput");
+  const name=input.value.trim();
+  if(!name){toast("Nama marketing tidak boleh kosong.","error");return}
+  const list=getMarketingList();
+  if(list.some(n=>n.toLowerCase()===name.toLowerCase())){toast("Nama marketing sudah ada di daftar.","error");return}
+  list.push(name);
+  setMarketingList(list);
+  input.value="";
+  renderMarketingList();
+  populateMarketingSelect();
+  toast('Marketing "'+name+'" ditambahkan.',"success");
+});
+populateMarketingSelect();
+renderMarketingList();
 
 function toast(msg,type=""){
   const el=$("toast"); el.textContent=msg; el.className="toast show "+type;
@@ -593,7 +683,7 @@ function showPage(name){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const page=$("page-"+name);if(page)page.classList.add("active");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
-  const titles={dashboard:"Dashboard",input:"Input peminjam",history:"Riwayat PDF"};
+  const titles={dashboard:"Dashboard",input:"Input peminjam",history:"Riwayat PDF",marketing:"Marketing"};
   $("pageTitle").textContent=titles[name]||"Ascarindo Finance";
   window.scrollTo({top:0,behavior:"smooth"});
 }
