@@ -279,6 +279,48 @@ small,.muted,.subtitle,.description{color:var(--muted)!important}
 }
 </style>
 
+<style id="login-clean-layout">
+.login-screen,.login-page,.login-overlay{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px 20px;
+}
+.login-screen .login-card,.login-page .login-card,.login-overlay .login-card,
+.login-screen form,.login-page form,.login-overlay form{
+  width:min(420px,100%);
+  margin:0 auto;
+}
+.login-screen h1,.login-page h1,.login-overlay h1{
+  margin-bottom:22px!important;
+}
+.login-screen .login-card > *:empty,
+.login-page .login-card > *:empty,
+.login-overlay .login-card > *:empty{
+  display:none!important;
+}
+@media(max-width:600px){
+  .login-screen,.login-page,.login-overlay{
+    padding:20px 14px;
+  }
+}
+</style>
+
+<style id="live-clock-final-css">
+.live-clock-final{
+  display:flex;flex-direction:column;align-items:flex-end;
+  justify-content:center;gap:2px;min-width:150px;text-align:right;line-height:1.15
+}
+.live-clock-final .date{font-size:12px;color:#8d99ab;letter-spacing:.2px}
+.live-clock-final .time{font-size:18px;font-weight:700;color:#f3f6fb;
+font-variant-numeric:tabular-nums;letter-spacing:.5px}
+@media(max-width:680px){
+ .live-clock-final{align-items:flex-start;text-align:left;min-width:0}
+ .live-clock-final .time{font-size:16px}
+}
+</style>
+
 </head>
 <body>
 
@@ -291,13 +333,13 @@ small,.muted,.subtitle,.description{color:var(--muted)!important}
         <div><div class="logo-title">ASCARINDO FINANCE</div><div class="logo-sub">Dokumentasi Peminjam</div></div>
       </div>
       <div class="hero-copy">
-        <h1>Arsip Peminjam</h1>
-        <p>Simpan data peminjam dan buat PDF dengan cepat.</p>
+        <h1></h1>
+        <p></p>
         <div class="hero-pills">
           <span class="hero-pill">PDF A4</span><span class="hero-pill">6 Foto</span>
         </div>
       </div>
-      <div style="font-size:10px;color:#9fb4cb">Data diproses di perangkat ini.</div>
+      <div style="font-size:10px;color:#9fb4cb"></div>
     </section>
 
     <section class="login-form">
@@ -346,6 +388,11 @@ small,.muted,.subtitle,.description{color:var(--muted)!important}
 
   <main class="main">
     <header class="topbar">
+<div class="live-clock-final" id="liveClockFinal">
+  <div class="date" id="liveDateFinal">-- -- ----</div>
+  <div class="time" id="liveTimeFinal">--:--:--</div>
+</div>
+
       <div class="page-title" id="pageTitle">Dashboard</div>
       <div class="top-actions"><div class="date-chip" id="topDate"></div></div>
     </header>
@@ -729,5 +776,25 @@ $("topDate").textContent=formatDateTime();
 $("sidebarDate").textContent=timeNow();
 refreshStats();
 </script>
+
+<script id="live-clock-final-js">
+(function(){
+ function updateLiveClockFinal(){
+   const now=new Date();
+   const d=document.getElementById("liveDateFinal");
+   const t=document.getElementById("liveTimeFinal");
+   if(!d||!t)return;
+   d.textContent=new Intl.DateTimeFormat("id-ID",{
+     weekday:"long",day:"2-digit",month:"long",year:"numeric"
+   }).format(now);
+   t.textContent=new Intl.DateTimeFormat("id-ID",{
+     hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false
+   }).format(now);
+ }
+ updateLiveClockFinal();
+ setInterval(updateLiveClockFinal,1000);
+})();
+</script>
+
 </body>
 </html>
