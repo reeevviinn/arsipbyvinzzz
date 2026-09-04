@@ -819,8 +819,8 @@ async function imageData(file,maxSide=1800,quality=.84){
   });
 }
 const PDF_NAVY=[16,36,62], PDF_STEEL=[111,143,199], PDF_BRASS=[176,140,86], PDF_TEXT=[31,39,53], PDF_MUTED=[110,120,135], PDF_LINE=[222,227,235], PDF_ROWBG=[245,247,250];
+
 function pdfHeader(doc,title){
-  // HEADER PDF REVISI: tanpa AF dan tanpa Dokumentasi Peminjam.
   doc.setFillColor(...PDF_NAVY);
   doc.rect(0,0,210,30,"F");
 
@@ -845,11 +845,11 @@ function pdfHeader(doc,title){
 function pdfFooter(doc,nama,id,page){
   doc.setDrawColor(...PDF_LINE);doc.setLineWidth(.3);doc.line(12,283,198,283);
   doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...PDF_MUTED);
+  doc.text("",12,288);
   doc.text(nama+" • "+id,105,288,{align:"center"});
   doc.text(String(page),198,288,{align:"right"});
   doc.setTextColor(...PDF_TEXT);
 }
-
 function sectionLabel(doc,text,y){
   doc.setFillColor(...PDF_ROWBG);doc.rect(12,y-4.5,186,7,"F");
   doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...PDF_NAVY);
@@ -881,20 +881,17 @@ async function fitImage(doc,dataUrl){
     img.src=dataUrl;
   });
 }
-async 
-function pdfWatermark(doc){
-  doc.saveGraphicsState();
-  doc.setTextColor(90,105,125);
+async function pdfWatermark(doc){
+  doc.setTextColor(215,220,228);
   doc.setFont("helvetica","bold");
   doc.setFontSize(30);
-  doc.setGState(new doc.GState({opacity:0.07}));
-  doc.text("ASCARINDO FINANCE",105,170,{align:"center",angle:35});
+  doc.text("ASCARINDO FINANCE",105,175,{align:"center",angle:35});
   doc.setFontSize(24);
-  doc.text("DOKUMEN RESMI",105,205,{align:"center",angle:35});
-  doc.restoreGraphicsState();
+  doc.text("DOKUMEN RESMI",105,208,{align:"center",angle:35});
+  doc.setTextColor(...PDF_TEXT);
 }
 
-async function buildPdf(){
+function buildPdf(){
   const {jsPDF}=window.jspdf||{};if(!jsPDF)throw new Error("Library PDF belum termuat. Periksa koneksi internet lalu refresh halaman.");
   const id=archiveId(), now=new Date();
   const nama=$("nama").value.trim(), nik=digits($("nik").value.trim()), marketing=$("marketing").value.trim();
@@ -902,7 +899,7 @@ async function buildPdf(){
 
   pdfHeader(doc,"BIODATA PEMINJAM");
   pdfWatermark(doc);
-  let y=43, shade=false;
+  let y=36, shade=false;
   y=sectionLabel(doc,"Informasi Arsip",y);
   y=addField(doc,"ID Arsip",id,y,shade=!shade);
   y=addField(doc,"Tanggal",now.toLocaleString("id-ID"),y,shade=!shade);
