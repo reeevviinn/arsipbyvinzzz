@@ -840,45 +840,61 @@ function pdfFooter(doc,nama,id,page){
   doc.setTextColor(...PDF_TEXT);
 }
 function pdfStamp(doc,cx,cy){
-  // Stempel dibuat lebih menyerupai cap tinta fisik:
-  // dua lingkaran, teks melingkar, garis tengah, dan sedikit
-  // variasi opacity/ketebalan garis agar tidak terlalu digital.
-  const r=16.2;
-  const ink=[55,72,96];
+  // Stempel biru bergaya cap tinta fisik:
+  // lingkaran ganda, teks melingkar, bintang, dan pita diagonal.
+  const ink=[35,69,116];
+  const r=15.8;
 
   doc.setDrawColor(...ink);
-  doc.setLineWidth(.85);
-  doc.circle(cx,cy,r,"S");
-  doc.setLineWidth(.35);
-  doc.circle(cx,cy,r-2.0,"S");
-
-  // Garis dekoratif kiri-kanan pada bagian tengah
-  doc.setLineWidth(.45);
-  doc.line(cx-r+3.2,cy,cx-7.5,cy);
-  doc.line(cx+7.5,cy,cx+r-3.2,cy);
-
-  // Teks utama
   doc.setTextColor(...ink);
+
+  // Lingkaran luar dan dalam
+  doc.setLineWidth(1.05);
+  doc.circle(cx,cy,r,"S");
+  doc.setLineWidth(.45);
+  doc.circle(cx,cy,r-2.1,"S");
+
+  // Bintang dekoratif atas dan bawah
   doc.setFont("helvetica","bold");
-  doc.setFontSize(7.2);
-  doc.text("ASCARINDO",cx,cy-4.5,{align:"center"});
-  doc.setFontSize(6.2);
-  doc.text("FINANCE",cx,cy+0.8,{align:"center"});
+  doc.setFontSize(7);
+  doc.text("★",cx-8.5,cy-7.2,{align:"center"});
+  doc.text("★",cx,cy-8.3,{align:"center"});
+  doc.text("★",cx+8.5,cy-7.2,{align:"center"});
+  doc.text("★",cx-8.5,cy+11.8,{align:"center"});
+  doc.text("★",cx,cy+12.6,{align:"center"});
+  doc.text("★",cx+8.5,cy+11.8,{align:"center"});
 
-  // Garis bawah teks tengah
-  doc.setLineWidth(.35);
-  doc.line(cx-7.0,cy+3.0,cx+7.0,cy+3.0);
-
+  // Tulisan melengkung secara bertahap mengikuti busur atas
   doc.setFont("helvetica","bold");
-  doc.setFontSize(4.9);
-  doc.text("ARSIP RESMI",cx,cy+6.8,{align:"center"});
+  doc.setFontSize(5.8);
+  const top="ASCARINDO FINANCE";
+  const start=-155;
+  const end=-25;
+  const step=(end-start)/(top.length-1);
+  for(let i=0;i<top.length;i++){
+    const a=(start+step*i)*Math.PI/180;
+    const rr=r-4.1;
+    const x=cx+Math.cos(a)*rr;
+    const y=cy+Math.sin(a)*rr;
+    doc.text(top[i],x,y,{align:"center",angle:start+step*i+90});
+  }
 
-  // Titik kecil seperti elemen cap
-  doc.setFont("helvetica","normal");
-  doc.setFontSize(5.5);
-  doc.text("•",cx-10.5,cy+6.7,{align:"center"});
-  doc.text("•",cx+10.5,cy+6.7,{align:"center"});
+  // Pita diagonal utama
+  const w=31,h=8,angle=-8;
+  doc.setFillColor(...ink);
+  doc.roundedRect(cx-w/2,cy-h/2,w,h,1.5,1.5,"F");
 
+  doc.setTextColor(255,255,255);
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(7.1);
+  doc.text("ARSIP RESMI",cx,cy+2.2,{align:"center",angle:angle});
+
+  // Bingkai tipis pada pita
+  doc.setDrawColor(255,255,255);
+  doc.setLineWidth(.3);
+  doc.roundedRect(cx-w/2+1,cy-h/2+1,w-2,h-2,1.1,1.1,"S");
+
+  // Kembali ke warna dokumen
   doc.setTextColor(...PDF_TEXT);
 }
 function sectionLabel(doc,text,y){
@@ -919,7 +935,7 @@ async function buildPdf(){
   const doc=new jsPDF({unit:"mm",format:"a4",compress:true});
 
   pdfHeader(doc,"BIODATA PEMINJAM");
-  let y=36, shade=false;
+  let y=43, shade=false;
   y=sectionLabel(doc,"Informasi Arsip",y);
   y=addField(doc,"ID Arsip",id,y,shade=!shade);
   y=addField(doc,"Tanggal",now.toLocaleString("id-ID"),y,shade=!shade);
