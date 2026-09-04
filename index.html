@@ -270,109 +270,257 @@ button{cursor:pointer}
 </style>
 
 
-<style id="login-overlay-final-fix">
-/* LOGIN HARUS MENUTUP SELURUH APLIKASI */
-#loginPage.login-page,
-.login-page{
+<style id="github-login-clean-final">
+/* =========================================================
+   GITHUB STATIC VERSION — LOGIN CLEAN
+   ========================================================= */
+
+/* Jangan pernah tampilkan APP ketika masih login */
+#app.hidden,
+.app-shell.hidden,
+.hidden{
+  display:none!important;
+}
+
+/* Login menjadi satu-satunya layer yang terlihat sebelum login */
+#loginPage{
   position:fixed!important;
   inset:0!important;
-  z-index:99999!important;
+  z-index:100000!important;
   width:100vw!important;
   height:100vh!important;
   min-height:100vh!important;
   margin:0!important;
+  padding:24px!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
-  padding:24px!important;
   overflow:auto!important;
 }
 
-/* Sembunyikan aplikasi di belakang login, bukan menghapusnya */
-body:has(#loginPage:not([style*="display: none"])){
-  overflow:hidden!important;
-}
-body:has(#loginPage:not([style*="display: none"])) .app,
-body:has(#loginPage:not([style*="display: none"])) #app,
-body:has(#loginPage:not([style*="display: none"])) .sidebar{
-  /* tetap ada di DOM, tetapi tertutup oleh login */
-}
-
-/* Card login proporsional */
+/* Card */
 #loginPage .login-card{
-  width:min(760px, calc(100vw - 48px))!important;
-  height:auto!important;
-  min-height:560px!important;
-  max-height:calc(100vh - 48px)!important;
-  margin:auto!important;
+  width:760px!important;
+  max-width:calc(100vw - 48px)!important;
+  min-height:540px!important;
+  height:540px!important;
+  margin:0!important;
   display:grid!important;
   grid-template-columns:1.08fr .92fr!important;
-  flex:none!important;
+  overflow:hidden!important;
+  border-radius:28px!important;
+  border:1px solid rgba(148,163,184,.14)!important;
+  background:#0e1521!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.45)!important;
 }
 
-/* Bagian kiri */
+/* KIRI */
 #loginPage .login-hero{
-  min-width:0!important;
-  height:auto!important;
-  min-height:560px!important;
-  padding:58px 48px!important;
-  overflow:hidden!important;
+  height:100%!important;
+  min-height:0!important;
+  padding:56px 48px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  background:
+    radial-gradient(circle at 18% 15%,rgba(79,124,255,.10),transparent 36%),
+    linear-gradient(160deg,#101b2d,#0d1727)!important;
 }
 
-/* Bagian kanan */
-#loginPage .login-form{
-  min-width:0!important;
-  height:auto!important;
-  min-height:560px!important;
-  padding:54px 48px!important;
-  justify-content:center!important;
-  overflow:hidden!important;
+#loginPage .login-hero .logo{
+  display:flex!important;
+  align-items:center!important;
+  gap:16px!important;
+  margin:0!important;
 }
 
-/* Jangan tampilkan elemen lama yang sebelumnya menyebabkan ruang kosong */
+#loginPage .login-hero .logo-mark{
+  width:52px!important;
+  height:52px!important;
+  flex:0 0 52px!important;
+  border-radius:15px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#2b3547!important;
+  color:#fff!important;
+  font-size:18px!important;
+  font-weight:900!important;
+}
+
+#loginPage .login-hero .logo-title{
+  color:#f7f9fc!important;
+  font-size:28px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+}
+
+#loginPage .login-hero .logo-sub{
+  margin-top:9px!important;
+  color:#91a0b4!important;
+  font-size:13px!important;
+}
+
+/* Pastikan tulisan lama di kiri tidak muncul */
 #loginPage .hero-copy,
 #loginPage .hero-pills,
 #loginPage .login-hero > div:last-child{
   display:none!important;
 }
 
-/* Input password: tombol Lihat tidak bertabrakan */
-#loginPage .password-wrap input{
-  padding-right:78px!important;
+/* KANAN */
+#loginPage .login-form{
+  height:100%!important;
+  min-height:0!important;
+  padding:52px 48px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  background:#111b2a!important;
 }
-#loginPage .password-toggle{
+
+#loginPage .login-form .eyebrow{
+  margin:0 0 12px!important;
+  color:#557cff!important;
+  font-size:13px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:2px!important;
+}
+
+#loginPage .login-form h2{
+  margin:0 0 34px!important;
+  color:#f7f9fc!important;
+  font-size:38px!important;
+  line-height:1!important;
+  font-weight:900!important;
+}
+
+#loginPage .login-form .field{
+  width:100%!important;
+  margin:0 0 20px!important;
+}
+
+#loginPage .login-form .field label{
+  display:block!important;
+  margin:0 0 9px!important;
+  color:#edf2f8!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+}
+
+#loginPage .login-form .input-wrap{
+  position:relative!important;
+  width:100%!important;
+}
+
+#loginPage .login-form .input-wrap input{
+  display:block!important;
+  width:100%!important;
+  height:58px!important;
+  padding:0 18px!important;
+  border-radius:15px!important;
+  border:1px solid rgba(148,163,184,.16)!important;
+  background:#090f19!important;
+  color:#f3f6fb!important;
+  font-size:16px!important;
+  outline:none!important;
+}
+
+#loginPage .login-form .input-wrap input:focus{
+  border-color:#557cff!important;
+  box-shadow:0 0 0 3px rgba(85,124,255,.10)!important;
+}
+
+#loginPage .login-form .input-wrap input::placeholder{
+  color:#68758a!important;
+  opacity:1!important;
+}
+
+/* Password + Lihat */
+#loginPage #password{
+  padding-right:76px!important;
+}
+
+#loginPage #togglePassword{
+  position:absolute!important;
   right:12px!important;
   top:50%!important;
   transform:translateY(-50%)!important;
-  margin:0!important;
-  padding:0 4px!important;
-  height:32px!important;
-  line-height:32px!important;
   z-index:5!important;
-}
-#loginPage .password-toggle:hover{
-  transform:translateY(-50%)!important;
+  width:auto!important;
+  height:34px!important;
+  min-width:48px!important;
+  margin:0!important;
+  padding:0 6px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#8290a5!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:34px!important;
 }
 
-/* Mobile */
+#loginPage #togglePassword:hover{
+  transform:translateY(-50%)!important;
+  color:#c5cfdd!important;
+}
+
+/* Tombol MASUK */
+#loginPage .login-btn{
+  width:100%!important;
+  height:58px!important;
+  margin:4px 0 0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:15px!important;
+  background:linear-gradient(135deg,#4f5ff2,#357df3)!important;
+  color:#fff!important;
+  font-size:16px!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+  box-shadow:0 14px 30px rgba(59,105,239,.20)!important;
+}
+
+#loginPage .login-error{
+  min-height:20px!important;
+  margin-top:10px!important;
+  color:#ff7272!important;
+  font-size:13px!important;
+  text-align:center!important;
+}
+
+/* MOBILE */
 @media(max-width:700px){
-  #loginPage.login-page{
+  #loginPage{
     padding:16px!important;
-    overflow:auto!important;
   }
+
   #loginPage .login-card{
-    width:min(430px,calc(100vw - 32px))!important;
-    max-height:none!important;
+    width:430px!important;
+    max-width:100%!important;
+    height:auto!important;
     min-height:0!important;
     grid-template-columns:1fr!important;
+    border-radius:24px!important;
   }
+
   #loginPage .login-hero{
-    min-height:155px!important;
-    padding:32px 28px!important;
+    height:auto!important;
+    min-height:150px!important;
+    padding:30px 26px!important;
   }
+
   #loginPage .login-form{
+    height:auto!important;
     min-height:0!important;
-    padding:34px 28px 38px!important;
+    padding:32px 26px 36px!important;
+  }
+
+  #loginPage .login-form h2{
+    font-size:34px!important;
+    margin-bottom:28px!important;
   }
 }
 </style>
@@ -653,7 +801,7 @@ function showPage(name){
   const page=$("page-"+name);if(page)page.classList.add("active");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
   const titles={dashboard:"Dashboard",input:"Input Peminjam",history:"Riwayat PDF"};
-  $("pageTitle").textContent=titles[name]||"ARSIP PINJAMAN";
+  $("pageTitle").textContent=titles[name]||"ASCARINDO FINANCE";
   window.scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
@@ -794,7 +942,7 @@ $("borrowerForm").addEventListener("submit",async e=>{
     showLoading(true,"Menyusun PDF...","Menggabungkan biodata dan dokumentasi.",68);setStep(3);
     const result=await buildPdf();
     showLoading(true,"Menyiapkan download...","PDF selesai, menyiapkan file.",94);setStep(4);await wait(350);
-    const filename="ARSIP PINJAMAN - "+safe(result.nama)+" - "+result.nik+".pdf";
+    const filename="ASCARINDO FINANCE - "+safe(result.nama)+" - "+result.nik+".pdf";
     result.doc.save(filename);setStep(4,"done");showLoading(false); simpleLoading(false);
     const h=getHistory();h.unshift({id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename});setHistory(h);
     refreshStats();
@@ -819,29 +967,5 @@ $("topDate").textContent=formatDateTime();
 $("sidebarDate").textContent=timeNow();
 refreshStats();
 </script>
-
-<script id="login-overlay-visibility-fix">
-(function(){
-  function fixLoginLayer(){
-    const login = document.getElementById("loginPage");
-    if(!login) return;
-    const hidden =
-      getComputedStyle(login).display === "none" ||
-      login.hidden ||
-      login.style.display === "none";
-    document.documentElement.classList.toggle("login-visible", !hidden);
-    document.body.classList.toggle("login-visible", !hidden);
-  }
-  document.addEventListener("DOMContentLoaded", fixLoginLayer);
-  const login = document.getElementById("loginPage");
-  if(login){
-    new MutationObserver(fixLoginLayer).observe(login,{
-      attributes:true,
-      attributeFilter:["style","class","hidden"]
-    });
-  }
-})();
-</script>
-
 </body>
 </html>
