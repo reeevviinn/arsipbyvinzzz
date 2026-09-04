@@ -877,9 +877,9 @@ async function fitImage(doc,dataUrl){
 function pdfWatermark(doc){
   doc.setTextColor(215,220,228);
   doc.setFont("helvetica","bold");
-  doc.setFontSize(30);
-  doc.text("ASCARINDO FINANCE",105,170,{align:"center",angle:35});
-  doc.setFontSize(24);
+  doc.setFontSize(42);
+  doc.text("ASCARINDO FINANCE",105,165,{align:"center",angle:35});
+  doc.setFontSize(34);
   doc.text("DOKUMEN RESMI",105,205,{align:"center",angle:35});
   doc.setTextColor(...PDF_TEXT);
 }
@@ -921,7 +921,7 @@ async function buildPdf(){
   for(const key of PHOTO_KEYS){
     if(!photoState[key]) continue;
     const data=await imageData(photoState[key]);photos++;page++;
-    doc.addPage();pdfHeader(doc,labels[key]);await fitImage(doc,data);pdfFooter(doc,nama,id,page);
+    doc.addPage();pdfHeader(doc,labels[key]);pdfWatermark(doc);await fitImage(doc,data);pdfFooter(doc,nama,id,page);
   }
   return {doc,id,nama,nik,marketing,photos,time:now.toLocaleString("id-ID"),dateKey:localDateKey(now)};
 }
