@@ -823,32 +823,25 @@ const PDF_NAVY=[16,36,62], PDF_STEEL=[111,143,199], PDF_BRASS=[176,140,86], PDF_
 function pdfHeader(doc,title){
   doc.setFillColor(...PDF_NAVY);
   doc.rect(0,0,210,30,"F");
-
   doc.setTextColor(255,255,255);
   doc.setFont("helvetica","bold");
   doc.setFontSize(15);
   doc.text("ASCARINDO FINANCE",105,13,{align:"center"});
-
   doc.setDrawColor(...PDF_BRASS);
   doc.setLineWidth(.8);
   doc.line(70,18,140,18);
-
-  doc.setFont("helvetica","bold");
   doc.setFontSize(9.5);
   doc.text(title,105,25,{align:"center"});
-
-  doc.setDrawColor(...PDF_BRASS);
   doc.setLineWidth(1);
   doc.line(0,30,210,30);
   doc.setTextColor(...PDF_TEXT);
 }
 function pdfFooter(doc,nama,id,page){
-  doc.setDrawColor(...PDF_LINE);doc.setLineWidth(.3);doc.line(12,283,198,283);
+  const h=doc.internal.pageSize.getHeight();
+  doc.setDrawColor(...PDF_LINE);doc.setLineWidth(.5);doc.line(18,h-16,192,h-16);
   doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...PDF_MUTED);
-  doc.text("",12,288);
-  doc.text(nama+" • "+id,105,288,{align:"center"});
-  doc.text(String(page),198,288,{align:"right"});
-  doc.setTextColor(...PDF_TEXT);
+  doc.text(`${nama} • ID ${id}`,105,h-10,{align:"center"});
+  doc.text(`Halaman ${page}`,192,h-10,{align:"right"});
 }
 function sectionLabel(doc,text,y){
   doc.setFillColor(...PDF_ROWBG);doc.rect(12,y-4.5,186,7,"F");
@@ -881,17 +874,17 @@ async function fitImage(doc,dataUrl){
     img.src=dataUrl;
   });
 }
-async function pdfWatermark(doc){
+function pdfWatermark(doc){
   doc.setTextColor(215,220,228);
   doc.setFont("helvetica","bold");
   doc.setFontSize(30);
-  doc.text("ASCARINDO FINANCE",105,175,{align:"center",angle:35});
+  doc.text("ASCARINDO FINANCE",105,170,{align:"center",angle:35});
   doc.setFontSize(24);
-  doc.text("DOKUMEN RESMI",105,208,{align:"center",angle:35});
+  doc.text("DOKUMEN RESMI",105,205,{align:"center",angle:35});
   doc.setTextColor(...PDF_TEXT);
 }
 
-function buildPdf(){
+async function buildPdf(){
   const {jsPDF}=window.jspdf||{};if(!jsPDF)throw new Error("Library PDF belum termuat. Periksa koneksi internet lalu refresh halaman.");
   const id=archiveId(), now=new Date();
   const nama=$("nama").value.trim(), nik=digits($("nik").value.trim()), marketing=$("marketing").value.trim();
@@ -920,7 +913,7 @@ function buildPdf(){
   doc.setFont("helvetica","normal");doc.setFontSize(9.5);doc.setTextColor(...PDF_TEXT);doc.text(alamatLines,16,y+5.5);
   y+=alamatH;
 
-  
+
   pdfFooter(doc,nama,id,1);
 
   let photos=0, page=1;
