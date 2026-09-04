@@ -269,6 +269,114 @@ button{cursor:pointer}
 }
 </style>
 
+
+<style id="login-overlay-final-fix">
+/* LOGIN HARUS MENUTUP SELURUH APLIKASI */
+#loginPage.login-page,
+.login-page{
+  position:fixed!important;
+  inset:0!important;
+  z-index:99999!important;
+  width:100vw!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:24px!important;
+  overflow:auto!important;
+}
+
+/* Sembunyikan aplikasi di belakang login, bukan menghapusnya */
+body:has(#loginPage:not([style*="display: none"])){
+  overflow:hidden!important;
+}
+body:has(#loginPage:not([style*="display: none"])) .app,
+body:has(#loginPage:not([style*="display: none"])) #app,
+body:has(#loginPage:not([style*="display: none"])) .sidebar{
+  /* tetap ada di DOM, tetapi tertutup oleh login */
+}
+
+/* Card login proporsional */
+#loginPage .login-card{
+  width:min(760px, calc(100vw - 48px))!important;
+  height:auto!important;
+  min-height:560px!important;
+  max-height:calc(100vh - 48px)!important;
+  margin:auto!important;
+  display:grid!important;
+  grid-template-columns:1.08fr .92fr!important;
+  flex:none!important;
+}
+
+/* Bagian kiri */
+#loginPage .login-hero{
+  min-width:0!important;
+  height:auto!important;
+  min-height:560px!important;
+  padding:58px 48px!important;
+  overflow:hidden!important;
+}
+
+/* Bagian kanan */
+#loginPage .login-form{
+  min-width:0!important;
+  height:auto!important;
+  min-height:560px!important;
+  padding:54px 48px!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+
+/* Jangan tampilkan elemen lama yang sebelumnya menyebabkan ruang kosong */
+#loginPage .hero-copy,
+#loginPage .hero-pills,
+#loginPage .login-hero > div:last-child{
+  display:none!important;
+}
+
+/* Input password: tombol Lihat tidak bertabrakan */
+#loginPage .password-wrap input{
+  padding-right:78px!important;
+}
+#loginPage .password-toggle{
+  right:12px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  margin:0!important;
+  padding:0 4px!important;
+  height:32px!important;
+  line-height:32px!important;
+  z-index:5!important;
+}
+#loginPage .password-toggle:hover{
+  transform:translateY(-50%)!important;
+}
+
+/* Mobile */
+@media(max-width:700px){
+  #loginPage.login-page{
+    padding:16px!important;
+    overflow:auto!important;
+  }
+  #loginPage .login-card{
+    width:min(430px,calc(100vw - 32px))!important;
+    max-height:none!important;
+    min-height:0!important;
+    grid-template-columns:1fr!important;
+  }
+  #loginPage .login-hero{
+    min-height:155px!important;
+    padding:32px 28px!important;
+  }
+  #loginPage .login-form{
+    min-height:0!important;
+    padding:34px 28px 38px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -711,5 +819,29 @@ $("topDate").textContent=formatDateTime();
 $("sidebarDate").textContent=timeNow();
 refreshStats();
 </script>
+
+<script id="login-overlay-visibility-fix">
+(function(){
+  function fixLoginLayer(){
+    const login = document.getElementById("loginPage");
+    if(!login) return;
+    const hidden =
+      getComputedStyle(login).display === "none" ||
+      login.hidden ||
+      login.style.display === "none";
+    document.documentElement.classList.toggle("login-visible", !hidden);
+    document.body.classList.toggle("login-visible", !hidden);
+  }
+  document.addEventListener("DOMContentLoaded", fixLoginLayer);
+  const login = document.getElementById("loginPage");
+  if(login){
+    new MutationObserver(fixLoginLayer).observe(login,{
+      attributes:true,
+      attributeFilter:["style","class","hidden"]
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
