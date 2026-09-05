@@ -371,7 +371,7 @@ tbody tr:hover td{background:var(--surface-2)}
     <nav class="nav">
       <button class="active" data-page="dashboard">Dashboard</button>
       <button data-page="input">Input peminjam</button>
-      <button data-page="history">Riwayat PDF</button>
+      <button data-page="history">Arsip Dokumen</button>
       <button data-page="marketing">Marketing</button>
     </nav>
 
@@ -460,7 +460,7 @@ tbody tr:hover td{background:var(--surface-2)}
       <!-- HISTORY -->
       <section id="page-history" class="page">
         <div class="page-intro">
-          <h2>ARSIP FILE</h2>
+          <h2>Arsip Dokumen Peminjam</h2>
         </div>
         <div class="card">
           <div class="searchbar">
@@ -817,7 +817,7 @@ function showPage(name){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const page=$("page-"+name);if(page)page.classList.add("active");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
-  const titles={dashboard:"Dashboard",input:"Input peminjam",history:"Riwayat PDF",marketing:"Marketing"};
+  const titles={dashboard:"Dashboard",input:"Input peminjam",history:"Arsip Dokumen",marketing:"Marketing"};
   $("pageTitle").textContent=titles[name]||"Ascarindo Finance";
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -1081,9 +1081,9 @@ $("borrowerForm").addEventListener("submit",async e=>{
     showLoading(true,"Memproses foto...","Mengompres foto agar PDF stabil.",36);setStep(2);await wait(220);
     showLoading(true,"Menyusun PDF...","Menggabungkan biodata dan dokumentasi.",68);setStep(3);
     const result=await buildPdf();
-    showLoading(true,"Menyiapkan download...","PDF selesai, menyiapkan file.",94);setStep(4);await wait(300);
+    showLoading(true,"Menyimpan dokumen...","PDF selesai, menyiapkan penyimpanan ke Google Drive.",94);setStep(4);await wait(300);
     const filename=safe(result.nama).replace(/\s+/g,"-")+"_"+result.nik+".pdf";
-    result.doc.save(filename);setStep(4,"done");showLoading(false);
+    setStep(4,"active");
     let driveUrl="";
     try{
       simpleLoading(true,"Mengunggah ke Drive...","Menyimpan salinan PDF ke Google Drive.");
@@ -1091,7 +1091,7 @@ $("borrowerForm").addEventListener("submit",async e=>{
       const uploadRes=await apiPost("uploadPdf",{filename,marketing:result.marketing,base64});
       driveUrl=uploadRes.url||"";
     }catch(uploadEx){
-      toast("PDF berhasil diunduh, tapi gagal diupload ke Google Drive: "+(uploadEx?.message||""),"error");
+      toast("PDF berhasil dibuat, tetapi gagal disimpan ke Google Drive: "+(uploadEx?.message||""),"error");
     }finally{
       simpleLoading(false);
     }
@@ -1102,7 +1102,7 @@ $("borrowerForm").addEventListener("submit",async e=>{
       toast("PDF berhasil dibuat, tapi gagal menyimpan riwayat ke server: "+(syncEx?.message||""),"error");
     }
     $("formStatus").textContent="Berhasil. PDF sudah dibuat: "+filename;$("formStatus").style.color="var(--success)";
-    toast("PDF berhasil dibuat dan diunduh.","success");
+    toast("PDF berhasil dibuat dan disimpan ke Google Drive.","success");
   }catch(ex){
     showLoading(false);const msg=ex?.message||"Gagal membuat PDF.";
     $("formStatus").textContent=msg;$("formStatus").style.color="var(--danger)";toast(msg,"error");
@@ -1117,7 +1117,7 @@ $("clearHistorySearch").addEventListener("click",()=>{
   renderHistory();
 });
 $("clearHistory").addEventListener("click",async ()=>{
-  if(!confirm("Hapus seluruh riwayat di server pusat? Ini akan menghapus riwayat untuk SEMUA orang. File PDF yang sudah diunduh tidak ikut terhapus."))return;
+  if(!confirm("Hapus seluruh riwayat di server pusat? Ini akan menghapus riwayat untuk SEMUA orang. File PDF yang sudah tersimpan di Google Drive tidak ikut terhapus."))return;
   simpleLoading(true,"Menghapus...","Menghapus riwayat di server.");
   try{
     await apiPost("clearHistory");
