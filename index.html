@@ -572,17 +572,25 @@ async function apiGet(action, extra){
   if(data.error) throw new Error(data.error);
   return data;
 }
-async function apiPost(action, payload){
+async function apiPost(action, payload, timeoutMs=60000){
   if(!apiConfigured()) throw new Error("APPS_SCRIPT_URL belum diisi di kode index.html.");
-  const res=await fetch(APPS_SCRIPT_URL,{
-    method:"POST",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify(Object.assign({action,token:APPS_SCRIPT_TOKEN},payload||{}))
-  });
-  if(!res.ok) throw new Error("Gagal menghubungi server (status "+res.status+").");
-  const data=await res.json();
-  if(data.error) throw new Error(data.error);
-  return data;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const res=await fetch(APPS_SCRIPT_URL,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(Object.assign({action,token:APPS_SCRIPT_TOKEN},payload||{})),
+      signal:controller.signal
+    });
+    if(!res.ok) throw new Error("Gagal menghubungi server (status "+res.status+").");
+    const data=await res.json();
+    if(data.error) throw new Error(data.error);
+    return data;
+  }catch(ex){
+    if(ex?.name==="AbortError") throw new Error("Server terlalu lama merespons. Silakan cek Google Drive/Apps Script.");
+    throw ex;
+  }finally{clearTimeout(timer)}
 }
 
 const PHOTO_KEYS = ["ktp","kk","rumah","selfie","sosmed","identitas"];
@@ -1081,7 +1089,7 @@ $("borrowerForm").addEventListener("submit",async e=>{
     showLoading(true,"Memproses foto...","Mengompres foto agar PDF stabil.",36);setStep(2);await wait(220);
     showLoading(true,"Menyusun PDF...","Menggabungkan biodata dan dokumentasi.",68);setStep(3);
     const result=await buildPdf();
-    showLoading(true,"Menyimpan dokumen...","PDF selesai, menyiapkan penyimpanan ke Google Drive.",94);setStep(4);await wait(300);
+    showLoading(true,"Menyimpan dokumen...","PDF selesai, menyimpan ke Google Drive.",94);setStep(4);await wait(300);
     const filename=safe(result.nama).replace(/\s+/g,"-")+"_"+result.nik+".pdf";
     setStep(4,"active");
     let driveUrl="";
@@ -1095,15 +1103,18 @@ $("borrowerForm").addEventListener("submit",async e=>{
     }finally{
       simpleLoading(false);
     }
-    try{
-      await apiPost("addHistory",{item:{id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename,driveUrl}});
-      await loadHistory();
-    }catch(syncEx){
-      toast("PDF berhasil dibuat, tapi gagal menyimpan riwayat ke server: "+(syncEx?.message||""),"error");
-    }
+    // PDF sudah tersimpan di Drive. Tutup overlay SEGERA agar halaman tidak terasa stuck.
     showLoading(false);
-    $("formStatus").textContent="Berhasil. PDF sudah disimpan ke Google Drive: "+filename;$("formStatus").style.color="var(--success)";
-    toast("PDF berhasil dibuat dan disimpan ke Google Drive.","success");
+    $("formStatus").textContent=driveUrl
+      ? "Berhasil. PDF sudah disimpan ke Google Drive: "+filename
+      : "PDF selesai dibuat, tetapi penyimpanan ke Google Drive perlu dicek: "+filename;
+    $("formStatus").style.color=driveUrl?"var(--success)":"var(--danger)";
+    if(driveUrl) toast("PDF berhasil dibuat dan disimpan ke Google Drive.","success");
+
+    // Sinkronisasi riwayat dilakukan di belakang layar, bukan menahan loading utama.
+    apiPost("addHistory",{item:{id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename,driveUrl}})
+      .then(()=>loadHistory())
+      .catch(syncEx=>toast("PDF sudah tersimpan, tetapi riwayat belum tersinkron: "+(syncEx?.message||""),"error"));
   }catch(ex){
     showLoading(false);const msg=ex?.message||"Gagal membuat PDF.";
     $("formStatus").textContent=msg;$("formStatus").style.color="var(--danger)";toast(msg,"error");
