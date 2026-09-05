@@ -521,7 +521,7 @@ tbody tr:hover td{background:var(--surface-2)}
       <div class="step" id="load1"><span class="dot"></span>Validasi data</div>
       <div class="step" id="load2"><span class="dot"></span>Memproses foto</div>
       <div class="step" id="load3"><span class="dot"></span>Menyusun PDF</div>
-      <div class="step" id="load4"><span class="dot"></span>Menyiapkan download</div>
+      <div class="step" id="load4"><span class="dot"></span>Menyimpan ke Google Drive</div>
     </div>
   </div>
 </div>
@@ -1101,7 +1101,8 @@ $("borrowerForm").addEventListener("submit",async e=>{
     }catch(syncEx){
       toast("PDF berhasil dibuat, tapi gagal menyimpan riwayat ke server: "+(syncEx?.message||""),"error");
     }
-    $("formStatus").textContent="Berhasil. PDF sudah dibuat: "+filename;$("formStatus").style.color="var(--success)";
+    showLoading(false);
+    $("formStatus").textContent="Berhasil. PDF sudah disimpan ke Google Drive: "+filename;$("formStatus").style.color="var(--success)";
     toast("PDF berhasil dibuat dan disimpan ke Google Drive.","success");
   }catch(ex){
     showLoading(false);const msg=ex?.message||"Gagal membuat PDF.";
