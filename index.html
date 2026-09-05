@@ -464,7 +464,10 @@ tbody tr:hover td{background:var(--surface-2)}
         </div>
         <div class="card">
           <div class="searchbar">
-            <input id="historySearch" placeholder="Cari nama, marketing, NIK, atau ID arsip...">
+            <input id="historySearch" placeholder="Cari nama, NIK, marketing, atau ID arsip...">
+            <select id="historyMarketingFilter">
+              <option value="">Semua Marketing</option>
+            </select>
             <button class="btn ghost" id="clearHistorySearch">Bersihkan</button>
             <button class="btn ghost" id="clearHistory">Hapus riwayat</button>
           </div>
@@ -602,7 +605,9 @@ async function loadMarketing(){
     marketingListCache=[];
   }
   populateMarketingSelect();
+  populateHistoryMarketingFilter();
   renderMarketingList();
+  renderHistory();
 }
 function populateMarketingSelect(){
   const sel=$("marketing");
@@ -615,6 +620,20 @@ function populateMarketingSelect(){
   }
   if(current && marketingListCache.includes(current)) sel.value=current;
 }
+function populateHistoryMarketingFilter(){
+  const sel=$("historyMarketingFilter");
+  if(!sel)return;
+  const current=sel.value;
+  sel.innerHTML='<option value="">Semua Marketing</option>';
+  for(const name of marketingListCache){
+    const opt=document.createElement("option");
+    opt.value=name;
+    opt.textContent=name;
+    sel.appendChild(opt);
+  }
+  if(current && marketingListCache.includes(current)) sel.value=current;
+}
+
 function renderMarketingList(){
   const el=$("marketingListBox"), list=marketingListCache;
   if(!list.length){el.innerHTML='<div class="history-empty">Belum ada nama marketing. Tambahkan lewat form di atas.</div>';return}
@@ -737,16 +756,60 @@ function renderDashboardHistory(items){
   out+='</tbody></table></div>';el.innerHTML=out;
 }
 function renderHistory(){
-  const el=$("historyTable"), q=($("historySearch").value||"").toLowerCase().trim(), h=historyCache.filter(x=>
-    !q || [x.id,x.nama,x.marketing,x.nik,x.filename].join(" ").toLowerCase().includes(q)
-  );
-  if(!h.length){el.innerHTML='<div class="history-empty">Tidak ada riwayat yang cocok dengan pencarian.</div>';return}
-  let out='<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>ID arsip</th><th>Peminjam</th><th>Marketing</th><th>Foto</th><th>File PDF</th></tr></thead><tbody>';
-  for(const x of h){
-    const fileCell=x.driveUrl?`<a href="${escapeHtml(x.driveUrl)}" target="_blank" rel="noopener" style="color:var(--accent)">${escapeHtml(x.filename)}</a>`:escapeHtml(x.filename);
-    out+=`<tr><td>${escapeHtml(x.time)}</td><td><b>${escapeHtml(x.id)}</b></td><td>${escapeHtml(x.nama)}<br><small>${escapeHtml(x.nik)}</small></td><td>${escapeHtml(x.marketing)}</td><td>${escapeHtml(String(x.photos))}</td><td>${fileCell}</td></tr>`;
+  const el=$("historyTable");
+  const q=($("historySearch").value||"").toLowerCase().trim();
+  const marketingFilter=$("historyMarketingFilter")?$("historyMarketingFilter").value:"";
+
+  const h=historyCache.filter(x=>{
+    const matchSearch=!q || [x.id,x.nama,x.marketing,x.nik,x.filename].join(" ").toLowerCase().includes(q);
+    const matchMarketing=!marketingFilter || x.marketing===marketingFilter;
+    return matchSearch && matchMarketing;
+  });
+
+  if(!h.length){
+    el.innerHTML='<div class="history-empty">Tidak ada arsip PDF yang cocok.</div>';
+    return;
   }
-  out+='</tbody></table></div>';el.innerHTML=out;
+
+  const groups={};
+  for(const item of h){
+    const marketing=item.marketing||"Tanpa Marketing";
+    if(!groups[marketing])groups[marketing]=[];
+    groups[marketing].push(item);
+  }
+
+  let out="";
+  Object.keys(groups).sort().forEach(marketing=>{
+    const items=groups[marketing];
+    out+=`<div class="card" style="margin-bottom:16px;padding:16px">
+      <div class="card-head" style="margin-bottom:12px">
+        <div>
+          <div class="card-title">${escapeHtml(marketing)}</div>
+          <div class="card-sub">${items.length} arsip PDF</div>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr>
+        <th>Tanggal</th><th>Peminjam</th><th>NIK</th><th>Foto</th><th>File PDF</th>
+      </tr></thead><tbody>`;
+
+    for(const x of items){
+      const fileCell=x.driveUrl
+        ? `<a href="${escapeHtml(x.driveUrl)}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700;text-decoration:none">Buka PDF</a>`
+        : `<span style="color:var(--faint)">Belum tersedia</span>`;
+
+      out+=`<tr>
+        <td>${escapeHtml(x.time)}</td>
+        <td><b>${escapeHtml(x.nama)}</b><br><small>${escapeHtml(x.id)}</small></td>
+        <td>${escapeHtml(x.nik)}</td>
+        <td>${escapeHtml(String(x.photos))}</td>
+        <td><div style="display:flex;flex-direction:column;gap:4px">${fileCell}<small>${escapeHtml(x.filename)}</small></div></td>
+      </tr>`;
+    }
+
+    out+=`</tbody></table></div></div>`;
+  });
+
+  el.innerHTML=out;
 }
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 
@@ -1019,13 +1082,13 @@ $("borrowerForm").addEventListener("submit",async e=>{
     showLoading(true,"Menyusun PDF...","Menggabungkan biodata dan dokumentasi.",68);setStep(3);
     const result=await buildPdf();
     showLoading(true,"Menyiapkan download...","PDF selesai, menyiapkan file.",94);setStep(4);await wait(300);
-    const filename="ASCARINDO FINANCE - "+safe(result.nama)+" - "+result.nik+".pdf";
+    const filename=safe(result.nama).replace(/\s+/g,"-")+"_"+result.nik+".pdf";
     result.doc.save(filename);setStep(4,"done");showLoading(false);
     let driveUrl="";
     try{
       simpleLoading(true,"Mengunggah ke Drive...","Menyimpan salinan PDF ke Google Drive.");
       const base64=result.doc.output("datauristring").split(",")[1];
-      const uploadRes=await apiPost("uploadPdf",{filename,base64});
+      const uploadRes=await apiPost("uploadPdf",{filename,marketing:result.marketing,base64});
       driveUrl=uploadRes.url||"";
     }catch(uploadEx){
       toast("PDF berhasil diunduh, tapi gagal diupload ke Google Drive: "+(uploadEx?.message||""),"error");
@@ -1047,7 +1110,12 @@ $("borrowerForm").addEventListener("submit",async e=>{
 });
 
 $("historySearch").addEventListener("input",renderHistory);
-$("clearHistorySearch").addEventListener("click",()=>{$("historySearch").value="";renderHistory()});
+$("historyMarketingFilter").addEventListener("change",renderHistory);
+$("clearHistorySearch").addEventListener("click",()=>{
+  $("historySearch").value="";
+  $("historyMarketingFilter").value="";
+  renderHistory();
+});
 $("clearHistory").addEventListener("click",async ()=>{
   if(!confirm("Hapus seluruh riwayat di server pusat? Ini akan menghapus riwayat untuk SEMUA orang. File PDF yang sudah diunduh tidak ikut terhapus."))return;
   simpleLoading(true,"Menghapus...","Menghapus riwayat di server.");
