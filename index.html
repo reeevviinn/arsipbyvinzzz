@@ -554,7 +554,7 @@ const LOGIN_CONFIG = {
    Apps Script kamu (lihat file Code.gs). Nilai TOKEN di sini
    HARUS SAMA PERSIS dengan TOKEN di Code.gs.
    =============================== */
-const APPS_SCRIPT_URL   = "https://script.google.com/macros/s/AKfycbyT1ZfVkZh5y2SENtQuVKsiiFYhXbcfZN-V7GPasE1tqJ9E-uLVVuu1367P1jx2c8zb/exec";
+const APPS_SCRIPT_URL   = "https://script.google.com/macros/s/AKfycby4DgfG2VFkhXx5EOOzsI0pmjkj9MHXJv0Ae7xDk4YqKW775_Y6yE-Mc8Lb-PYh5JHP/exec";
 const APPS_SCRIPT_TOKEN = "ascarindo-2026";
 
 function apiConfigured(){
@@ -742,7 +742,10 @@ function renderHistory(){
   );
   if(!h.length){el.innerHTML='<div class="history-empty">Tidak ada riwayat yang cocok dengan pencarian.</div>';return}
   let out='<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>ID arsip</th><th>Peminjam</th><th>Marketing</th><th>Foto</th><th>File PDF</th></tr></thead><tbody>';
-  for(const x of h) out+=`<tr><td>${escapeHtml(x.time)}</td><td><b>${escapeHtml(x.id)}</b></td><td>${escapeHtml(x.nama)}<br><small>${escapeHtml(x.nik)}</small></td><td>${escapeHtml(x.marketing)}</td><td>${escapeHtml(String(x.photos))}</td><td>${escapeHtml(x.filename)}</td></tr>`;
+  for(const x of h){
+    const fileCell=x.driveUrl?`<a href="${escapeHtml(x.driveUrl)}" target="_blank" rel="noopener" style="color:var(--accent)">${escapeHtml(x.filename)}</a>`:escapeHtml(x.filename);
+    out+=`<tr><td>${escapeHtml(x.time)}</td><td><b>${escapeHtml(x.id)}</b></td><td>${escapeHtml(x.nama)}<br><small>${escapeHtml(x.nik)}</small></td><td>${escapeHtml(x.marketing)}</td><td>${escapeHtml(String(x.photos))}</td><td>${fileCell}</td></tr>`;
+  }
   out+='</tbody></table></div>';el.innerHTML=out;
 }
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
@@ -1018,11 +1021,22 @@ $("borrowerForm").addEventListener("submit",async e=>{
     showLoading(true,"Menyiapkan download...","PDF selesai, menyiapkan file.",94);setStep(4);await wait(300);
     const filename="ASCARINDO FINANCE - "+safe(result.nama)+" - "+result.nik+".pdf";
     result.doc.save(filename);setStep(4,"done");showLoading(false);
+    let driveUrl="";
     try{
-      await apiPost("addHistory",{item:{id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename}});
+      simpleLoading(true,"Mengunggah ke Drive...","Menyimpan salinan PDF ke Google Drive.");
+      const base64=result.doc.output("datauristring").split(",")[1];
+      const uploadRes=await apiPost("uploadPdf",{filename,base64});
+      driveUrl=uploadRes.url||"";
+    }catch(uploadEx){
+      toast("PDF berhasil diunduh, tapi gagal diupload ke Google Drive: "+(uploadEx?.message||""),"error");
+    }finally{
+      simpleLoading(false);
+    }
+    try{
+      await apiPost("addHistory",{item:{id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename,driveUrl}});
       await loadHistory();
     }catch(syncEx){
-      toast("PDF berhasil diunduh, tapi gagal menyimpan riwayat ke server: "+(syncEx?.message||""),"error");
+      toast("PDF berhasil dibuat, tapi gagal menyimpan riwayat ke server: "+(syncEx?.message||""),"error");
     }
     $("formStatus").textContent="Berhasil. PDF sudah dibuat: "+filename;$("formStatus").style.color="var(--success)";
     toast("PDF berhasil dibuat dan diunduh.","success");
