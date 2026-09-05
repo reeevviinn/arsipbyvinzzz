@@ -548,6 +548,41 @@ const LOGIN_CONFIG = {
   password: "Revin071101"
 };
 
+/* ===============================
+   KONFIGURASI DATA PUSAT (Google Sheet via Apps Script)
+   Isi APPS_SCRIPT_URL dan APPS_SCRIPT_TOKEN sesuai hasil deploy
+   Apps Script kamu (lihat file Code.gs). Nilai TOKEN di sini
+   HARUS SAMA PERSIS dengan TOKEN di Code.gs.
+   =============================== */
+const APPS_SCRIPT_URL   = "https://script.google.com/macros/s/AKfycbyT1ZfVkZh5y2SENtQuVKsiiFYhXbcfZN-V7GPasE1tqJ9E-uLVVuu1367P1jx2c8zb/exec";
+const APPS_SCRIPT_TOKEN = "const TOKEN = "ascarindo-2026"; // wajib diganti!
+";
+
+function apiConfigured(){
+  return APPS_SCRIPT_URL && !APPS_SCRIPT_URL.includes("TEMPEL_URL");
+}
+async function apiGet(action, extra){
+  if(!apiConfigured()) throw new Error("APPS_SCRIPT_URL belum diisi di kode index.html.");
+  const params=new URLSearchParams(Object.assign({action,token:APPS_SCRIPT_TOKEN},extra||{}));
+  const res=await fetch(APPS_SCRIPT_URL+"?"+params.toString());
+  if(!res.ok) throw new Error("Gagal menghubungi server (status "+res.status+").");
+  const data=await res.json();
+  if(data.error) throw new Error(data.error);
+  return data;
+}
+async function apiPost(action, payload){
+  if(!apiConfigured()) throw new Error("APPS_SCRIPT_URL belum diisi di kode index.html.");
+  const res=await fetch(APPS_SCRIPT_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify(Object.assign({action,token:APPS_SCRIPT_TOKEN},payload||{}))
+  });
+  if(!res.ok) throw new Error("Gagal menghubungi server (status "+res.status+").");
+  const data=await res.json();
+  if(data.error) throw new Error(data.error);
+  return data;
+}
+
 const PHOTO_KEYS = ["ktp","kk","rumah","selfie","sosmed","identitas"];
 const REQUIRED_PHOTOS = ["ktp","kk","rumah","selfie"];
 const photoState = {};
@@ -555,34 +590,34 @@ let busy = false;
 
 const $ = id => document.getElementById(id);
 
-/* Daftar nama marketing default — dipakai hanya jika belum ada data tersimpan. */
-const DEFAULT_MARKETING_LIST = ["Marketing 1","Marketing 2","Marketing 3","Marketing 4"];
+/* Daftar marketing sekarang disimpan di Google Sheet pusat (lewat Apps Script),
+   supaya sama untuk semua orang / semua perangkat. */
+let marketingListCache = [];
 
-function getMarketingList(){
+async function loadMarketing(){
   try{
-    const raw=localStorage.getItem("marketingList");
-    if(raw===null){setMarketingList(DEFAULT_MARKETING_LIST);return DEFAULT_MARKETING_LIST.slice()}
-    const value=JSON.parse(raw);
-    return Array.isArray(value)?value:DEFAULT_MARKETING_LIST.slice();
-  }catch{return DEFAULT_MARKETING_LIST.slice()}
-}
-function setMarketingList(list){
-  try{localStorage.setItem("marketingList",JSON.stringify(list))}
-  catch{toast("Daftar marketing tidak dapat disimpan di peramban ini.","error")}
+    const res=await apiGet("getMarketing");
+    marketingListCache=Array.isArray(res.marketing)?res.marketing:[];
+  }catch(ex){
+    toast("Gagal memuat data marketing dari server: "+(ex?.message||""),"error");
+    marketingListCache=[];
+  }
+  populateMarketingSelect();
+  renderMarketingList();
 }
 function populateMarketingSelect(){
   const sel=$("marketing");
   const current=sel.value;
   sel.innerHTML='<option value="" disabled selected>Pilih marketing</option>';
-  for(const name of getMarketingList()){
+  for(const name of marketingListCache){
     const opt=document.createElement("option");
     opt.value=name;opt.textContent=name;
     sel.appendChild(opt);
   }
-  if(current && getMarketingList().includes(current)) sel.value=current;
+  if(current && marketingListCache.includes(current)) sel.value=current;
 }
 function renderMarketingList(){
-  const el=$("marketingListBox"), list=getMarketingList();
+  const el=$("marketingListBox"), list=marketingListCache;
   if(!list.length){el.innerHTML='<div class="history-empty">Belum ada nama marketing. Tambahkan lewat form di atas.</div>';return}
   let out='<div class="table-wrap"><table><thead><tr><th>Nama</th><th></th></tr></thead><tbody>';
   list.forEach((name,i)=>{
@@ -591,35 +626,41 @@ function renderMarketingList(){
   out+='</tbody></table></div>';
   el.innerHTML=out;
   el.querySelectorAll("[data-remove-marketing]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
+    btn.addEventListener("click",async ()=>{
       const idx=Number(btn.dataset.removeMarketing);
-      const list=getMarketingList();
-      const removed=list[idx];
-      if(!confirm('Hapus "'+removed+'" dari daftar marketing?'))return;
-      list.splice(idx,1);
-      setMarketingList(list);
-      renderMarketingList();
-      populateMarketingSelect();
-      toast('Marketing "'+removed+'" dihapus.',"success");
+      const removed=marketingListCache[idx];
+      if(!confirm('Hapus "'+removed+'" dari daftar marketing? Ini berlaku untuk semua orang.'))return;
+      simpleLoading(true,"Menghapus...","Menyimpan perubahan ke server.");
+      try{
+        await apiPost("removeMarketing",{name:removed});
+        await loadMarketing();
+        toast('Marketing "'+removed+'" dihapus.',"success");
+      }catch(ex){
+        toast("Gagal menghapus marketing: "+(ex?.message||""),"error");
+      }finally{
+        simpleLoading(false);
+      }
     });
   });
 }
-$("marketingForm").addEventListener("submit",e=>{
+$("marketingForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const input=$("marketingNameInput");
   const name=input.value.trim();
   if(!name){toast("Nama marketing tidak boleh kosong.","error");return}
-  const list=getMarketingList();
-  if(list.some(n=>n.toLowerCase()===name.toLowerCase())){toast("Nama marketing sudah ada di daftar.","error");return}
-  list.push(name);
-  setMarketingList(list);
-  input.value="";
-  renderMarketingList();
-  populateMarketingSelect();
-  toast('Marketing "'+name+'" ditambahkan.',"success");
+  if(marketingListCache.some(n=>n.toLowerCase()===name.toLowerCase())){toast("Nama marketing sudah ada di daftar.","error");return}
+  simpleLoading(true,"Menyimpan...","Menambahkan marketing ke server.");
+  try{
+    await apiPost("addMarketing",{name});
+    input.value="";
+    await loadMarketing();
+    toast('Marketing "'+name+'" ditambahkan.',"success");
+  }catch(ex){
+    toast("Gagal menambah marketing: "+(ex?.message||""),"error");
+  }finally{
+    simpleLoading(false);
+  }
 });
-populateMarketingSelect();
-renderMarketingList();
 
 function toast(msg,type=""){
   const el=$("toast"); el.textContent=msg; el.className="toast show "+type;
@@ -665,18 +706,22 @@ function archiveId(){
   for(let i=0;i<6;i++) r+=chars[Math.floor(Math.random()*chars.length)];
   return "ARS-"+date+"-"+r;
 }
-function getHistory(){
+/* Riwayat PDF sekarang disimpan di Google Sheet pusat (lewat Apps Script),
+   supaya sama untuk semua orang / semua perangkat. */
+let historyCache = [];
+
+async function loadHistory(){
   try{
-    const value=JSON.parse(localStorage.getItem("arsipHistory")||"[]");
-    return Array.isArray(value)?value:[];
-  }catch{return[]}
-}
-function setHistory(v){
-  try{localStorage.setItem("arsipHistory",JSON.stringify(v.slice(0,100)))}
-  catch{toast("Riwayat tidak dapat disimpan di peramban ini (mungkin penyimpanan penuh atau dinonaktifkan).","error")}
+    const res=await apiGet("getHistory");
+    historyCache=Array.isArray(res.history)?res.history:[];
+  }catch(ex){
+    toast("Gagal memuat riwayat dari server: "+(ex?.message||""),"error");
+    historyCache=[];
+  }
+  refreshStats();
 }
 function refreshStats(){
-  const h=getHistory(), uniq=new Set(h.map(x=>x.nik||x.nama)).size;
+  const h=historyCache, uniq=new Set(h.map(x=>x.nik||x.nama)).size;
   $("statPdf").textContent=h.length;
   $("statBorrower").textContent=uniq;
   $("statPhotos").textContent=h.reduce((a,x)=>a+(x.photos||0),0);
@@ -693,7 +738,7 @@ function renderDashboardHistory(items){
   out+='</tbody></table></div>';el.innerHTML=out;
 }
 function renderHistory(){
-  const el=$("historyTable"), q=($("historySearch").value||"").toLowerCase().trim(), h=getHistory().filter(x=>
+  const el=$("historyTable"), q=($("historySearch").value||"").toLowerCase().trim(), h=historyCache.filter(x=>
     !q || [x.id,x.nama,x.marketing,x.nik,x.filename].join(" ").toLowerCase().includes(q)
   );
   if(!h.length){el.innerHTML='<div class="history-empty">Tidak ada riwayat yang cocok dengan pencarian.</div>';return}
@@ -739,7 +784,8 @@ async function attemptLogin(){
     $("loginPage").style.display="none";
     $("app").classList.remove("hidden");
     $("app").style.display="grid";
-    refreshStats();
+    simpleLoading(true,"Memuat data...","Mengambil data dari server pusat.");
+    await Promise.all([loadMarketing(), loadHistory()]);
     toast("Berhasil masuk.","success");
   }catch(ex){
     $("loginError").textContent="Gagal membuka aplikasi. Silakan refresh halaman.";
@@ -775,6 +821,8 @@ $("logoutBtn").addEventListener("click",()=>{
     $("loginPage").style.display="none";
     $("app").classList.remove("hidden");
     $("app").style.display="grid";
+    simpleLoading(true,"Memuat data...","Mengambil data dari server pusat.");
+    Promise.all([loadMarketing(), loadHistory()]).catch(()=>{}).finally(()=>simpleLoading(false));
   }else{
     $("loginPage").classList.remove("hidden");
     $("loginPage").style.display="flex";
@@ -971,8 +1019,12 @@ $("borrowerForm").addEventListener("submit",async e=>{
     showLoading(true,"Menyiapkan download...","PDF selesai, menyiapkan file.",94);setStep(4);await wait(300);
     const filename="ASCARINDO FINANCE - "+safe(result.nama)+" - "+result.nik+".pdf";
     result.doc.save(filename);setStep(4,"done");showLoading(false);
-    const h=getHistory();h.unshift({id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename});setHistory(h);
-    refreshStats();
+    try{
+      await apiPost("addHistory",{item:{id:result.id,nama:result.nama,nik:result.nik,marketing:result.marketing,photos:result.photos,time:result.time,dateKey:result.dateKey,filename}});
+      await loadHistory();
+    }catch(syncEx){
+      toast("PDF berhasil diunduh, tapi gagal menyimpan riwayat ke server: "+(syncEx?.message||""),"error");
+    }
     $("formStatus").textContent="Berhasil. PDF sudah dibuat: "+filename;$("formStatus").style.color="var(--success)";
     toast("PDF berhasil dibuat dan diunduh.","success");
   }catch(ex){
@@ -983,15 +1035,24 @@ $("borrowerForm").addEventListener("submit",async e=>{
 
 $("historySearch").addEventListener("input",renderHistory);
 $("clearHistorySearch").addEventListener("click",()=>{$("historySearch").value="";renderHistory()});
-$("clearHistory").addEventListener("click",()=>{
-  if(confirm("Hapus seluruh riwayat lokal? File PDF yang sudah diunduh tidak ikut terhapus.")){localStorage.removeItem("arsipHistory");refreshStats();toast("Riwayat lokal dihapus.","success")}
+$("clearHistory").addEventListener("click",async ()=>{
+  if(!confirm("Hapus seluruh riwayat di server pusat? Ini akan menghapus riwayat untuk SEMUA orang. File PDF yang sudah diunduh tidak ikut terhapus."))return;
+  simpleLoading(true,"Menghapus...","Menghapus riwayat di server.");
+  try{
+    await apiPost("clearHistory");
+    await loadHistory();
+    toast("Riwayat pusat dihapus.","success");
+  }catch(ex){
+    toast("Gagal menghapus riwayat: "+(ex?.message||""),"error");
+  }finally{
+    simpleLoading(false);
+  }
 });
 
 $("topDate").textContent=formatDateTime();
 $("sidebarDate").textContent=formatDateTime();
 setInterval(()=>{ $("topDate").textContent=formatDateTime(); $("sidebarDate").textContent=formatDateTime(); },1000);
 simpleLoading(false);
-refreshStats();
 </script>
 </body>
 </html>
