@@ -468,8 +468,7 @@ tbody tr:hover td{background:var(--surface-2)}
             <select id="historyMarketingFilter">
               <option value="">Semua Marketing</option>
             </select>
-            <button class="btn ghost" id="clearHistorySearch">Bersihkan</button>
-            <button class="btn ghost" id="clearHistory">Hapus riwayat</button>
+            <button class="btn ghost" id="deleteSelectedHistory" disabled>Hapus</button>
           </div>
           <div id="historyTable"></div>
         </div>
@@ -767,58 +766,50 @@ function renderHistory(){
   const el=$("historyTable");
   const q=($("historySearch").value||"").toLowerCase().trim();
   const marketingFilter=$("historyMarketingFilter")?$("historyMarketingFilter").value:"";
-
   const h=historyCache.filter(x=>{
     const matchSearch=!q || [x.id,x.nama,x.marketing,x.nik,x.filename].join(" ").toLowerCase().includes(q);
     const matchMarketing=!marketingFilter || x.marketing===marketingFilter;
     return matchSearch && matchMarketing;
   });
-
-  if(!h.length){
-    el.innerHTML='<div class="history-empty">Tidak ada arsip PDF yang cocok.</div>';
-    return;
-  }
-
+  if(!h.length){el.innerHTML='<div class="history-empty">Tidak ada arsip PDF yang cocok.</div>';updateDeleteButton();return;}
   const groups={};
-  for(const item of h){
-    const marketing=item.marketing||"Tanpa Marketing";
-    if(!groups[marketing])groups[marketing]=[];
-    groups[marketing].push(item);
-  }
-
+  for(const item of h){const marketing=item.marketing||"Tanpa Marketing";if(!groups[marketing])groups[marketing]=[];groups[marketing].push(item);}
   let out="";
   Object.keys(groups).sort().forEach(marketing=>{
     const items=groups[marketing];
+    const groupKey="g"+Math.random().toString(36).slice(2,10);
     out+=`<div class="card" style="margin-bottom:16px;padding:16px">
-      <div class="card-head" style="margin-bottom:12px">
-        <div>
-          <div class="card-title">${escapeHtml(marketing)}</div>
-          <div class="card-sub">${items.length} arsip PDF</div>
-        </div>
-      </div>
-      <div class="table-wrap"><table><thead><tr>
-        <th>Tanggal</th><th>Peminjam</th><th>NIK</th><th>Foto</th><th>File PDF</th>
-      </tr></thead><tbody>`;
-
+      <div class="card-head" style="margin-bottom:12px"><div><div class="card-title">${escapeHtml(marketing)}</div><div class="card-sub">${items.length} arsip PDF</div></div>
+      <label style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px;cursor:pointer"><input type="checkbox" class="history-group-check" data-group="${groupKey}" style="width:15px;height:15px;accent-color:var(--accent)"> Pilih semua</label></div>
+      <div class="table-wrap"><table><thead><tr><th style="width:42px;text-align:center">Pilih</th><th>Tanggal</th><th>Peminjam</th><th>NIK</th><th>Foto</th><th>File PDF</th><th>Aksi</th></tr></thead><tbody>`;
     for(const x of items){
-      const fileCell=x.driveUrl
-        ? `<a href="${escapeHtml(x.driveUrl)}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700;text-decoration:none">Buka PDF</a>`
-        : `<span style="color:var(--faint)">Belum tersedia</span>`;
-
-      out+=`<tr>
-        <td>${escapeHtml(x.time)}</td>
-        <td><b>${escapeHtml(x.nama)}</b><br><small>${escapeHtml(x.id)}</small></td>
-        <td>${escapeHtml(x.nik)}</td>
-        <td>${escapeHtml(String(x.photos))}</td>
+      const fileCell=x.driveUrl?`<a href="${escapeHtml(x.driveUrl)}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700;text-decoration:none">Buka PDF</a>`:`<span style="color:var(--faint)">Belum tersedia</span>`;
+      const itemId=escapeHtml(String(x.id||""));
+      out+=`<tr><td style="text-align:center"><input type="checkbox" class="history-check" data-id="${itemId}" data-group="${groupKey}" style="width:15px;height:15px;accent-color:var(--accent)"></td>
+        <td>${escapeHtml(x.time)}</td><td><b>${escapeHtml(x.nama)}</b><br><small>${escapeHtml(x.id)}</small></td><td>${escapeHtml(x.nik)}</td><td>${escapeHtml(String(x.photos))}</td>
         <td><div style="display:flex;flex-direction:column;gap:4px">${fileCell}<small>${escapeHtml(x.filename)}</small></div></td>
-      </tr>`;
+        <td><button type="button" class="btn ghost history-delete-one" data-id="${itemId}" style="padding:7px 11px;color:var(--danger)">Hapus</button></td></tr>`;
     }
-
-    out+=`</tbody></table></div></div>`;
+    out+='</tbody></table></div></div>';
   });
-
   el.innerHTML=out;
+  el.querySelectorAll('.history-check').forEach(cb=>cb.addEventListener('change',()=>{syncGroupCheck(cb.dataset.group);updateDeleteButton();}));
+  el.querySelectorAll('.history-group-check').forEach(cb=>cb.addEventListener('change',()=>{el.querySelectorAll('.history-check[data-group="'+cb.dataset.group+'"]').forEach(item=>item.checked=cb.checked);updateDeleteButton();}));
+  el.querySelectorAll('.history-delete-one').forEach(btn=>btn.addEventListener('click',()=>deleteHistoryItems([btn.dataset.id])));
+  updateDeleteButton();
 }
+function syncGroupCheck(groupKey){const items=[...document.querySelectorAll('.history-check[data-group="'+groupKey+'"]')];const group=document.querySelector('.history-group-check[data-group="'+groupKey+'"]');if(!group||!items.length)return;group.checked=items.every(x=>x.checked);group.indeterminate=items.some(x=>x.checked)&&!group.checked;}
+function getSelectedHistoryIds(){return [...document.querySelectorAll('.history-check:checked')].map(x=>x.dataset.id).filter(Boolean);}
+function updateDeleteButton(){const btn=$("deleteSelectedHistory");if(!btn)return;const count=getSelectedHistoryIds().length;btn.disabled=count===0;btn.textContent=count?`Hapus (${count})`:"Hapus";}
+async function deleteHistoryItems(ids){
+  const unique=[...new Set((ids||[]).filter(Boolean))];if(!unique.length)return;const count=unique.length;
+  if(!confirm(count===1?"Hapus arsip ini?":"Hapus "+count+" arsip yang dipilih?"))return;
+  simpleLoading(true,"Menghapus...","Menghapus arsip yang dipilih.");
+  try{await apiPost("deleteHistory",{ids:unique});historyCache=historyCache.filter(x=>!unique.includes(String(x.id)));refreshStats();renderHistory();toast(count===1?"Arsip berhasil dihapus.":count+" arsip berhasil dihapus.","success");}
+  catch(ex){toast("Gagal menghapus arsip: "+(ex?.message||""),"error");}
+  finally{simpleLoading(false);}
+}
+
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 
 function showPage(name){
@@ -1123,24 +1114,7 @@ $("borrowerForm").addEventListener("submit",async e=>{
 
 $("historySearch").addEventListener("input",renderHistory);
 $("historyMarketingFilter").addEventListener("change",renderHistory);
-$("clearHistorySearch").addEventListener("click",()=>{
-  $("historySearch").value="";
-  $("historyMarketingFilter").value="";
-  renderHistory();
-});
-$("clearHistory").addEventListener("click",async ()=>{
-  if(!confirm("Hapus seluruh riwayat di server pusat? Ini akan menghapus riwayat untuk SEMUA orang. File PDF yang sudah tersimpan di Google Drive tidak ikut terhapus."))return;
-  simpleLoading(true,"Menghapus...","Menghapus riwayat di server.");
-  try{
-    await apiPost("clearHistory");
-    await loadHistory();
-    toast("Riwayat pusat dihapus.","success");
-  }catch(ex){
-    toast("Gagal menghapus riwayat: "+(ex?.message||""),"error");
-  }finally{
-    simpleLoading(false);
-  }
-});
+$("deleteSelectedHistory").addEventListener("click",()=>deleteHistoryItems(getSelectedHistoryIds()));
 
 $("topDate").textContent=formatDateTime();
 $("sidebarDate").textContent=formatDateTime();
